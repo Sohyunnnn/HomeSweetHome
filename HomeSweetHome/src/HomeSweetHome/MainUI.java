@@ -178,7 +178,7 @@ class ImagePanel extends JPanel {
 		JButton Img3 = new JButton("이미지");
 		JButton Img4 = new JButton("이미지");
 		JButton Img5 = new JButton("이미지");
-		JButton Img6 = new JButton("이미지");
+		JButton Img6 = new JButton("이미지");//
 		
 		Img1.setBounds(20, 20, 288, 291);
 		Img2.setBounds(348, 20, 288, 291);
