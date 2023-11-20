@@ -68,18 +68,21 @@ class StartPanel extends JPanel {
         JButton loginButton = new JButton("로그인");
         JButton signUpButton = new JButton("회원가입");
 
-        JTextField logo = new JTextField("Home Sweet Home");
+        ImageIcon logo = new ImageIcon("images/Logo.png");
 
         loginButton.setBounds(361, 349, 260, 59);
         signUpButton.setBounds(361, 458, 260, 59);
-        logo.setBounds(43, 139, 898, 130);
+        
+        JLabel logoLabel = new JLabel(logo);
+        logoLabel.setBounds(57, 151, logo.getIconWidth(), logo.getIconHeight());
+
 
         add(loginButton);
         add(signUpButton);
-        add(logo);
+        
+        add(logoLabel);
 
-        setBackground(Color.RED);
-      //컬러는 패널 교체를 편리하게 보기 위함. 코드 로직이 탄탄해지면 삭제 예정
+        setBackground(Color.WHITE);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -94,6 +97,9 @@ class StartPanel extends JPanel {
                 mainUI.showSignUpPanel(); // SignUpPanel로 전환
             }
         });
+        
+        System.out.println("Logo Width: " + logo.getIconWidth());
+        System.out.println("Logo Height: " + logo.getIconHeight());
     }
 }
 
