@@ -8,6 +8,7 @@ import HomeSweetHome.HintTextField;
 
 
 
+
 public class MainUI extends JFrame {
     private JPanel cardPanel;
     private CardLayout cardLayout;
@@ -16,6 +17,7 @@ public class MainUI extends JFrame {
     private SignUpPanel signUpPanel;
     private LogInPanel logInPanel;
     private ImagePanel imagePanel;
+    private WishListPanel wishListPanel;
 
     public MainUI() {
         setTitle("Home Sweet Home");
@@ -30,11 +32,13 @@ public class MainUI extends JFrame {
         signUpPanel = new SignUpPanel(this);
         logInPanel = new LogInPanel(this);
         imagePanel = new ImagePanel(this);
+        wishListPanel = new WishListPanel(this);
 
         cardPanel.add(startPanel, "start");
         cardPanel.add(signUpPanel, "signUp");
         cardPanel.add(logInPanel, "login");
         cardPanel.add(imagePanel, "image");
+        cardPanel.add(wishListPanel, "WishList");
 
         add(cardPanel);
         setVisible(true);
@@ -55,6 +59,9 @@ public class MainUI extends JFrame {
     public void showImagePanel() {
         cardLayout.show(cardPanel, "image");
     }
+    public void showWishListPanel() {
+        cardLayout.show(cardPanel, "WishList");
+    }
 
     public static void main(String[] args) {
         new MainUI();
@@ -64,22 +71,27 @@ public class MainUI extends JFrame {
 class StartPanel extends JPanel {
     public StartPanel(MainUI mainUI) {
         setLayout(null);
+       
+        RoundedButton loginButton = new RoundedButton("로그인");
+        RoundedButton signUpButton = new RoundedButton("회원가입");
 
-        JButton loginButton = new JButton("로그인");
-        JButton signUpButton = new JButton("회원가입");
 
-        JTextField logo = new JTextField("Home Sweet Home");
+        ImageIcon logo = new ImageIcon("images/Logo.png");
 
-        loginButton.setBounds(361, 349, 260, 59);
-        signUpButton.setBounds(361, 458, 260, 59);
-        logo.setBounds(43, 139, 898, 130);
+        loginButton.setBounds(361, 349, 260, 60);
+        signUpButton.setBounds(361, 458, 260, 60);
+        
+        JLabel logoLabel = new JLabel(logo);
+        logoLabel.setBounds(57, 151, logo.getIconWidth(), logo.getIconHeight());
+
 
         add(loginButton);
         add(signUpButton);
-        add(logo);
+        
+        add(logoLabel);
+        
 
-        setBackground(Color.RED);
-      //컬러는 패널 교체를 편리하게 보기 위함. 코드 로직이 탄탄해지면 삭제 예정
+        setBackground(Color.WHITE);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -94,6 +106,7 @@ class StartPanel extends JPanel {
                 mainUI.showSignUpPanel(); // SignUpPanel로 전환
             }
         });
+
     }
 }
 
@@ -101,31 +114,45 @@ class SignUpPanel extends JPanel {
     public SignUpPanel(MainUI mainUI) {
         setLayout(null);
 
-        JTextField welcomeMent = new JTextField("환영합니다. HomeSweet Home입니다.\n 회원가입을 위한 아이디와 비밀번호를 입력해주세요.");
+        JLabel welcomeMent = new JLabel("<html><body><center>환영합니다.<br> <br>회원가입을 위한 아이디와 비밀번호를 입력해주세요.</center></body></html>");
         HintTextField idInput = new HintTextField("로그인");
         HintPasswordField passwordInput = new HintPasswordField("비밀번호");
         HintPasswordField passCheckInput = new HintPasswordField("비밀번호 확인");
-        JButton SignUpConfirmation = new JButton("확인");
+        RoundedButton SignUpConfirmation = new RoundedButton("확인");
+        
+        ImageIcon SignUpShape = new ImageIcon("images/SignUpShape.png");
+        
+        ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
+        
+        JLabel signUpShapeLabel = new JLabel(SignUpShape);
+        signUpShapeLabel.setBounds(0, 0, SignUpShape.getIconWidth(), SignUpShape.getIconHeight());
+        
+        JLabel smallLogoLabel = new JLabel(smallLogo);
+        smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
 
-        welcomeMent.setBounds(185, 86, 605, 120);
-        idInput.setBounds(275, 255, 425, 59);
-        passwordInput.setBounds(275, 343, 425, 59);
-        passCheckInput.setBounds(275, 431, 425, 59);
-        SignUpConfirmation.setBounds(387, 539, 209, 59);
+        System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
+
+        welcomeMent.setBounds(36, 260, 287, 153);
+        idInput.setBounds(487, 107, 425, 59);
+        passwordInput.setBounds(487, 223, 425, 59);
+        passCheckInput.setBounds(487, 331, 425, 59);
+        SignUpConfirmation.setBounds(586, 476, 209, 59);
 
         add(welcomeMent);
         add(idInput);
         add(passwordInput);
         add(passCheckInput);
         add(SignUpConfirmation);
+        add(smallLogoLabel);
+        add(signUpShapeLabel);
 
-        setBackground(Color.BLUE);
-      //컬러는 패널 교체를 편리하게 보기 위함. 코드 로직이 탄탄해지면 삭제 예정
+        setBackground(Color.WHITE);
 
         SignUpConfirmation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainUI.showStartPanel(); // StartPanel로 전환 -> loginPanel로 넘어가는 거 아니었는지?
+                //mainUI.showStartPanel(); // StartPanel로 전환
+            	mainUI.showWishListPanel();
             }
         });
     }
@@ -155,7 +182,6 @@ class LogInPanel extends JPanel {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 회원가입 버튼을 눌렀을 때 수행할 로직을 여기에 추가 <- 요거는 회원가입 패널에 넣는 거 아닌가요
                 mainUI.showImagePanel(); // StartPanel로 전환 
                 //이미지 클릭하는 패널 추가해서 이미지 패널로 넘어가게 수정
             }
@@ -200,4 +226,58 @@ class ImagePanel extends JPanel {
 		
 		
 	}
+	
+}
+
+class WishListPanel extends JPanel {
+    public WishListPanel(MainUI mainUI) {
+        setLayout(null);
+
+        JLabel id = new JLabel("아이디");
+        RoundedButton SignUpConfirmation = new RoundedButton("확인");//나중에 삭제 할 코드
+        JButton logOut = new JButton("로그아웃");
+        JLabel wishList = new JLabel("찜 목록");
+        
+        id.setOpaque(true);
+        id.setBackground(Color.decode("#D9D9D9"));
+       
+        
+        ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
+        
+        JLabel smallLogoLabel = new JLabel(smallLogo);
+        smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
+        
+        ImageIcon profile = new ImageIcon("images/profile.png");
+        
+        JLabel profileLabel = new JLabel(profile);
+        profileLabel.setBounds(63, 101, 200, 200);
+
+
+        id.setBounds(63, 364, 200, 47);
+        SignUpConfirmation.setBounds(586, 476, 209, 59);//나중에 삭제 할 코드
+        wishList.setBounds(342, 49, 200, 47);
+        logOut.setBounds(63,455,200,47);
+        
+        id.setFont(new Font("굴림체", Font.PLAIN, 18)); 
+        wishList.setFont(new Font("굴림체", Font.PLAIN, 35));
+        
+        logOut.setBackground(Color.decode("#D9D9D9"));
+
+
+        add(id);
+        add(SignUpConfirmation);//나중에 삭제 할 코드
+        add(smallLogoLabel);
+        add(profileLabel);
+        add(wishList);
+        add(logOut);
+
+        setBackground(Color.WHITE);
+
+        SignUpConfirmation.addActionListener(new ActionListener() {//나중에 삭제 할 코드
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainUI.showStartPanel(); // StartPanel로 전환 
+            }
+        });
+    }
 }
