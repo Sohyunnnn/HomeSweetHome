@@ -17,6 +17,7 @@ public class MainUI extends JFrame {
     private SignUpPanel signUpPanel;
     private LogInPanel logInPanel;
     private ImagePanel imagePanel;
+    private WishListPanel wishListPanel;
 
     public MainUI() {
         setTitle("Home Sweet Home");
@@ -31,11 +32,13 @@ public class MainUI extends JFrame {
         signUpPanel = new SignUpPanel(this);
         logInPanel = new LogInPanel(this);
         imagePanel = new ImagePanel(this);
+        wishListPanel = new WishListPanel(this);
 
         cardPanel.add(startPanel, "start");
         cardPanel.add(signUpPanel, "signUp");
         cardPanel.add(logInPanel, "login");
         cardPanel.add(imagePanel, "image");
+        cardPanel.add(wishListPanel, "WishList");
 
         add(cardPanel);
         setVisible(true);
@@ -55,6 +58,9 @@ public class MainUI extends JFrame {
     
     public void showImagePanel() {
         cardLayout.show(cardPanel, "image");
+    }
+    public void showWishListPanel() {
+        cardLayout.show(cardPanel, "WishList");
     }
 
     public static void main(String[] args) {
@@ -145,7 +151,8 @@ class SignUpPanel extends JPanel {
         SignUpConfirmation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainUI.showStartPanel(); // StartPanel로 전환 -> loginPanel로 넘어가는 거 아니었는지?
+                //mainUI.showStartPanel(); // StartPanel로 전환
+            	mainUI.showWishListPanel();
             }
         });
     }
@@ -219,4 +226,58 @@ class ImagePanel extends JPanel {
 		
 		
 	}
+	
+}
+
+class WishListPanel extends JPanel {
+    public WishListPanel(MainUI mainUI) {
+        setLayout(null);
+
+        JLabel id = new JLabel("아이디");
+        RoundedButton SignUpConfirmation = new RoundedButton("확인");//나중에 삭제 할 코드
+        JButton logOut = new JButton("로그아웃");
+        JLabel wishList = new JLabel("찜 목록");
+        
+        id.setOpaque(true);
+        id.setBackground(Color.decode("#D9D9D9"));
+       
+        
+        ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
+        
+        JLabel smallLogoLabel = new JLabel(smallLogo);
+        smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
+        
+        ImageIcon profile = new ImageIcon("images/profile.png");
+        
+        JLabel profileLabel = new JLabel(profile);
+        profileLabel.setBounds(63, 101, 200, 200);
+
+
+        id.setBounds(63, 364, 200, 47);
+        SignUpConfirmation.setBounds(586, 476, 209, 59);//나중에 삭제 할 코드
+        wishList.setBounds(342, 49, 200, 47);
+        logOut.setBounds(63,455,200,47);
+        
+        id.setFont(new Font("굴림체", Font.PLAIN, 18)); 
+        wishList.setFont(new Font("굴림체", Font.PLAIN, 35));
+        
+        logOut.setBackground(Color.decode("#D9D9D9"));
+
+
+        add(id);
+        add(SignUpConfirmation);//나중에 삭제 할 코드
+        add(smallLogoLabel);
+        add(profileLabel);
+        add(wishList);
+        add(logOut);
+
+        setBackground(Color.WHITE);
+
+        SignUpConfirmation.addActionListener(new ActionListener() {//나중에 삭제 할 코드
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainUI.showStartPanel(); // StartPanel로 전환 
+            }
+        });
+    }
 }
