@@ -4,9 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import HomeSweetHome.HintTextField;
-
-
+//import HomeSweetHome.HintTextField;
 
 
 public class MainUI extends JFrame {
@@ -74,9 +72,11 @@ class StartPanel extends JPanel {
        
         RoundedButton loginButton = new RoundedButton("로그인");
         RoundedButton signUpButton = new RoundedButton("회원가입");
+        
 
-
+        //ImageIcon logo = new ImageIcon("images/logo.svg");
         ImageIcon logo = new ImageIcon("images/Logo.png");
+
 
         loginButton.setBounds(361, 349, 260, 60);
         signUpButton.setBounds(361, 458, 260, 60);
