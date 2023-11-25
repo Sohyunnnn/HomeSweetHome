@@ -50,11 +50,12 @@ public class RoundedButton extends JButton {
             graphics.setColor(c);
         }
         graphics.fillRoundRect(0, 0, width, height, 10, 10);
+        graphics.setFont(getFont().deriveFont(Font.PLAIN, 27));
+        //setFont를 먼저 설정하고 fontmetrics를 해줘야하는데 두개 순서가 뒤바뀌어서 자꾸 위치가 제대로 안되었던 것
         FontMetrics fontMetrics = graphics.getFontMetrics();
         int textX = (width - fontMetrics.stringWidth(getText())) / 2;
         int textY = (height - fontMetrics.getHeight()) / 2 + fontMetrics.getAscent();
         graphics.setColor(o);
-        graphics.setFont(getFont().deriveFont(Font.PLAIN, 27));
         graphics.drawString(getText(), textX, textY);
         graphics.dispose();
         super.paintComponent(g);

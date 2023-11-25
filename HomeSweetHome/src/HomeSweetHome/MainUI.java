@@ -16,12 +16,12 @@ public class MainUI extends JFrame {
     private LogInPanel logInPanel;
     private ImagePanel imagePanel;
     private WishListPanel wishListPanel;
+    private MainPage mainPage;
 
     public MainUI() {
         setTitle("Home Sweet Home");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(984, 662);
-        //492, 331
 
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
@@ -31,12 +31,14 @@ public class MainUI extends JFrame {
         logInPanel = new LogInPanel(this);
         imagePanel = new ImagePanel(this);
         wishListPanel = new WishListPanel(this);
+        mainPage = new MainPage(this);
 
         cardPanel.add(startPanel, "start");
         cardPanel.add(signUpPanel, "signUp");
         cardPanel.add(logInPanel, "login");
         cardPanel.add(imagePanel, "image");
         cardPanel.add(wishListPanel, "WishList");
+        cardPanel.add(mainPage, "MainPage");
 
         add(cardPanel);
         setVisible(true);
@@ -59,6 +61,10 @@ public class MainUI extends JFrame {
     }
     public void showWishListPanel() {
         cardLayout.show(cardPanel, "WishList");
+    }
+    
+    public void showMainPage() {
+        cardLayout.show(cardPanel, "MainPage");
     }
 
     public static void main(String[] args) {
@@ -128,7 +134,7 @@ class SignUpPanel extends JPanel {
         signUpShapeLabel.setBounds(0, 0, SignUpShape.getIconWidth(), SignUpShape.getIconHeight());
         
         JLabel smallLogoLabel = new JLabel(smallLogo);
-        smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
+        smallLogoLabel.setBounds(16, 16, 262, 39);
 
         System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
 
@@ -163,21 +169,34 @@ class LogInPanel extends JPanel {
     public LogInPanel(MainUI mainUI) {
     	setLayout(null);
 
-        JButton loginButton = new JButton("로그인");
+        RoundedButton loginButton = new RoundedButton("로그인");
         //로그인 페이지 구현
         HintTextField checkidInput = new HintTextField("로그인");
         HintPasswordField checkpasswordInput = new HintPasswordField("비밀번호");
+        
+        ImageIcon logInShape = new ImageIcon("images/logInShape.png");
+        
+        ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
+        
+        JLabel logInShapeLabel = new JLabel(logInShape);
+        logInShapeLabel.setBounds(530, 0, logInShape.getIconWidth(), logInShape.getIconHeight());
+        
+        JLabel smallLogoLabel = new JLabel(smallLogo);
+        smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
 
-        loginButton.setBounds(361, 380, 260, 59);
-        checkidInput.setBounds(275, 210, 425, 59);
-        checkpasswordInput.setBounds(275, 300, 425, 59);
+        System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
+
+
+        loginButton.setBounds(146, 419, 260, 59);
+        checkidInput.setBounds(67, 129, 425, 59);
+        checkpasswordInput.setBounds(67, 268, 425, 59);
         
         add(checkidInput);
         add(checkpasswordInput);
         add(loginButton);
+        add(smallLogoLabel);
+        add(logInShapeLabel);
 
-        setBackground(Color.GREEN);
-        //컬러는 패널 교체를 편리하게 보기 위함. 코드 로직이 탄탄해지면 삭제 예정
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -189,44 +208,76 @@ class LogInPanel extends JPanel {
     }
 }
 
-class ImagePanel extends JPanel {
+class ImagePanel extends JPanel { 
+	private MainUI mainUI;
 	public ImagePanel(MainUI mainUI) {
+		this.mainUI = mainUI;
 //		GridLayout layout = new GridLayout(2,3);
 //		setLayout(layout);
-//		ImageIcon imgTest = new ImageIcon("images/sunset.jpg");
-//		ImageIcon imgTest1 = new ImageIcon("images/test.jpg");
+		ImageIcon imgmodern = new ImageIcon("images/modern.png");
+		ImageIcon imgnatural = new ImageIcon("images/natural.png");
+		ImageIcon imgmidcentury = new ImageIcon("images/midcentury.png");
+		ImageIcon imgnorthEu = new ImageIcon("images/northEu.png");
+		ImageIcon imgvintage = new ImageIcon("images/vintage.png");
+		ImageIcon imgcontry = new ImageIcon("images/contry.png");
+        ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
 
 		
 		setLayout(null);
 		
-		JButton Img1 = new JButton("이미지");
-		JButton Img2 = new JButton("이미지");
-		JButton Img3 = new JButton("이미지");
-		JButton Img4 = new JButton("이미지");
-		JButton Img5 = new JButton("이미지");
-		JButton Img6 = new JButton("이미지");//
+		JLabel smallLogoLabel = new JLabel(smallLogo);
+        smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
 		
-		Img1.setBounds(20, 20, 288, 291);
-		Img2.setBounds(348, 20, 288, 291);
-		Img3.setBounds(676, 20, 288, 291);
-		Img4.setBounds(20, 351, 288, 291);
-		Img5.setBounds(348, 351, 288, 291);
-		Img6.setBounds(676, 351, 288, 291);
+        
+        
+        JButton[] imageButtons = new JButton[6];
 
-		
-		add(Img1);
-		add(Img2);
-		add(Img3);
-		add(Img4);
-		add(Img5);
-		add(Img6);
-		
+        for (int i = 0; i < 6; i++) {
+            imageButtons[i] = new JButton();
+            setButtonProperties(imageButtons[i], i + 1);
+            addListener(imageButtons[i], i + 1);
+            add(imageButtons[i]);
+        }
 
-		
-		
-		
-	}
-	
+        add(smallLogoLabel);
+    }
+
+    private void setButtonProperties(JButton button, int index) {
+        ImageIcon icon = null;
+
+        switch (index) {
+            case 1:
+                icon = new ImageIcon("images/modern.png");
+                break;
+            case 2:
+                icon = new ImageIcon("images/natural.png");
+                break;
+            case 3:
+                icon = new ImageIcon("images/midcentury.png");
+                break;
+            case 4:
+                icon = new ImageIcon("images/northEu.png");
+                break;
+            case 5:
+                icon = new ImageIcon("images/vintage.png");
+                break;
+            case 6:
+                icon = new ImageIcon("images/contry.png");
+                break;
+        }
+
+        button.setIcon(icon);
+        button.setBounds((index - 1) % 3 * 309 + 53, (index - 1) / 3 * 301 + 64, 260, 260);
+    }
+
+    private void addListener(JButton button, final int index) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainUI.showMainPage();
+            }
+        });
+    }
 }
 
 class WishListPanel extends JPanel {
