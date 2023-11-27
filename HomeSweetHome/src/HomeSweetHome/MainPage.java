@@ -38,17 +38,17 @@ public class MainPage extends JPanel{
 		setLayout(null);
 		
 				
-		BestItemB.setBounds(53,82,93,24);
-		vintageB.setBounds(202,82,93,24);
-		modernB.setBounds(335,82,93,24);
-		midcenturyB.setBounds(456,82,93,24);
-		contryB.setBounds(624,82,93,24);
-		naturalB.setBounds(870,82,93,24);
+		//BestItemB.setBounds(53,82,93,24);
+		vintageB.setBounds(103,84,93,24);
+		modernB.setBounds(277,84,93,24);
+		midcenturyB.setBounds(438,84,93,24);
+		contryB.setBounds(650,84,93,24);
+		naturalB.setBounds(827,84,93,24);
 		
-		lampB.setBounds(154,144,93,24);
-		chairB.setBounds(274,144,93,24);
-		bedB.setBounds(531,144,93,24);
-		sofaB.setBounds(648,144,93,24);
+		lampB.setBounds(357,138,93,24);
+		chairB.setBounds(169,138,93,24);
+		bedB.setBounds(70,138,93,24);
+		sofaB.setBounds(263,138,93,24);
 		Mappingtf.setBounds(311,25,428,28);
 		
 		LogoutB.setBounds(773,22,95,32);
@@ -75,9 +75,9 @@ public class MainPage extends JPanel{
         //PriceSl.setMajorTickSpacing(50);
         //PriceSl.setMinorTickSpacing(50);
         PriceSl.addChangeListener(new MyChangeListener());
-        PriceSl.setBounds(569, 205, 200, 50);
+        PriceSl.setBounds(522,151,200,18);
         PriceSl.setBackground(Color.WHITE);
-        PriceLabel.setBounds(649,250,70,18);
+        PriceLabel.setBounds(457,143,39,18);
         PriceLabel.setBackground(Color.WHITE);
 		
 		add(BestItemB);
