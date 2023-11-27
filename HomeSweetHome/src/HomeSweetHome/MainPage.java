@@ -3,14 +3,14 @@ package HomeSweetHome;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
+import java.awt.Cursor;
 import java.awt.*;
 import java.awt.event.*;
 
 import HomeSweetHome.MainUI;
 
 public class MainPage extends JPanel{
-	private JLabel BestItemB = new JLabel("Best아이템");
+	private JLabel BestItemB = new JLabel("Best상품");
 	private JLabel vintageB = new JLabel("빈티지");
 	private JLabel modernB = new JLabel("모던");
 	private JLabel midcenturyB = new JLabel("미드센추리");
@@ -24,8 +24,7 @@ public class MainPage extends JPanel{
 	private JLabel bedB = new JLabel("침대");
 	private JLabel sofaB = new JLabel("소파");
 	private JLabel drawerB = new JLabel("서랍장");
-	private JTextField Mappingtf = new JTextField("검색");
-	
+	private JTextField Mappingtf = new Mappingtf("검색");
 	private JSlider PriceSl = new JSlider();
 	
 	ImageIcon profileImg = new ImageIcon("images/profile.png");
@@ -34,7 +33,7 @@ public class MainPage extends JPanel{
 	ImageIcon updateIcon = new ImageIcon(updateImg);
 	ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
 	private JButton profileB = new JButton(updateIcon);
-	private JButton LogoutB = new JButton("로그아웃");
+	private RoundedButton LogoutB = new RoundedButton("로그아웃");
 	private JLabel PriceLabel = new JLabel("1000~50000");
 	
 	
@@ -65,6 +64,7 @@ public class MainPage extends JPanel{
 		profileB.setContentAreaFilled(false);
 		profileB.setFocusPainted(false);		
 		
+		profileB.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, 262, 39);
@@ -108,6 +108,8 @@ public class MainPage extends JPanel{
 		add(PriceLabel);
 		
 		setBackground(Color.WHITE);
+		
+	    
 		
         LogoutB.addActionListener(new ActionListener() {
             @Override
