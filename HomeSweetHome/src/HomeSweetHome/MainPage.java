@@ -3,7 +3,7 @@ package HomeSweetHome;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.Cursor;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -15,15 +15,12 @@ public class MainPage extends JPanel{
 	private JLabel modernB = new JLabel("모던");
 	private JLabel midcenturyB = new JLabel("미드센추리");
 	private JLabel contryB = new JLabel("컨트리");
-	private JLabel northEuB = new JLabel("북유럽");
 	private JLabel naturalB = new JLabel("내추럴");
 
 	private JLabel lampB = new JLabel("조명");
 	private JLabel chairB = new JLabel("의자");
-	private JLabel closetB = new JLabel("옷장");
 	private JLabel bedB = new JLabel("침대");
 	private JLabel sofaB = new JLabel("소파");
-	private JLabel drawerB = new JLabel("서랍장");
 	private JTextField Mappingtf = new Mappingtf("검색");
 	private JSlider PriceSl = new JSlider();
 	
@@ -39,21 +36,19 @@ public class MainPage extends JPanel{
 	
 	public MainPage(MainUI mainUI) {
 		setLayout(null);
+		
 				
 		BestItemB.setBounds(53,82,93,24);
 		vintageB.setBounds(202,82,93,24);
 		modernB.setBounds(335,82,93,24);
 		midcenturyB.setBounds(456,82,93,24);
 		contryB.setBounds(624,82,93,24);
-		northEuB.setBounds(750,82,93,24);
 		naturalB.setBounds(870,82,93,24);
 		
 		lampB.setBounds(154,144,93,24);
 		chairB.setBounds(274,144,93,24);
-		closetB.setBounds(396,144,93,24);
 		bedB.setBounds(531,144,93,24);
 		sofaB.setBounds(648,144,93,24);
-		drawerB.setBounds(785,144,93,24);
 		Mappingtf.setBounds(311,25,428,28);
 		
 		LogoutB.setBounds(773,22,95,32);
@@ -90,17 +85,17 @@ public class MainPage extends JPanel{
 		add(modernB);
 		add(midcenturyB);
 		add(contryB);
-		add(northEuB);
 		add(naturalB);
 		
 		add(lampB);
 		add(chairB);
-		add(closetB);
 		add(bedB);
 		add(sofaB);
-		add(drawerB);
 		
 		add(profileB);
+		
+		
+		
 		add(LogoutB);
 		add(smallLogoLabel);
 		add(Mappingtf);

@@ -17,6 +17,7 @@ public class MainUI extends JFrame {
     private ImagePanel imagePanel;
     private WishListPanel wishListPanel;
     private MainPage mainPage;
+    
 
     public MainUI() {
         setTitle("Home Sweet Home");
@@ -78,6 +79,13 @@ class StartPanel extends JPanel {
        
         RoundedButton loginButton = new RoundedButton("로그인");
         RoundedButton signUpButton = new RoundedButton("회원가입");
+        Font customFont = new Font("굴림체", Font.PLAIN, 27);
+        loginButton.setCustomFont(customFont);
+        signUpButton.setCustomFont(customFont);
+        loginButton.setBackground(new Color(0x16, 0x3A, 0x9C)); // 배경색 설정
+        loginButton.setForeground(new Color(255, 255, 255)); // 글자색 설정
+        signUpButton.setBackground(new Color(0x16, 0x3A, 0x9C)); // 배경색 설정
+        signUpButton.setForeground(new Color(255, 255, 255)); // 글자색 설정
         
 
         //ImageIcon logo = new ImageIcon("images/logo.svg");
@@ -126,6 +134,11 @@ class SignUpPanel extends JPanel {
         HintPasswordField passCheckInput = new HintPasswordField("비밀번호 확인");
         RoundedButton SignUpConfirmation = new RoundedButton("확인");
         
+        Font customFont = new Font("굴림체", Font.PLAIN, 27);
+        SignUpConfirmation.setCustomFont(customFont);
+        SignUpConfirmation.setBackground(new Color(0x16, 0x3A, 0x9C)); // 배경색 설정
+        SignUpConfirmation.setForeground(new Color(255, 255, 255)); // 글자색 설정
+        
         ImageIcon SignUpShape = new ImageIcon("images/SignUpShape.png");
         
         ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
@@ -170,9 +183,13 @@ class LogInPanel extends JPanel {
     	setLayout(null);
 
         RoundedButton loginButton = new RoundedButton("로그인");
-        //로그인 페이지 구현
         HintTextField checkidInput = new HintTextField("로그인");
         HintPasswordField checkpasswordInput = new HintPasswordField("비밀번호");
+        
+        Font customFont = new Font("굴림체", Font.PLAIN, 27);
+        loginButton.setCustomFont(customFont);
+        loginButton.setBackground(new Color(0x16, 0x3A, 0x9C)); // 배경색 설정
+        loginButton.setForeground(new Color(255, 255, 255)); // 글자색 설정
         
         ImageIcon logInShape = new ImageIcon("images/logInShape.png");
         
@@ -197,6 +214,7 @@ class LogInPanel extends JPanel {
         add(smallLogoLabel);
         add(logInShapeLabel);
 
+        setBackground(Color.WHITE);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -214,49 +232,56 @@ class ImagePanel extends JPanel {
 		this.mainUI = mainUI;
 //		GridLayout layout = new GridLayout(2,3);
 //		setLayout(layout);
-		ImageIcon imgmodern = new ImageIcon("images/modern.png");
-		ImageIcon imgnatural = new ImageIcon("images/natural.png");
-		ImageIcon imgmidcentury = new ImageIcon("images/midcentury.png");
-		ImageIcon imgnorthEu = new ImageIcon("images/northEu.png");
-		ImageIcon imgvintage = new ImageIcon("images/vintage.png");
-		ImageIcon imgcontry = new ImageIcon("images/contry.png");
-        ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
+//		ImageIcon imgLargeLogo = new ImageIcon("images/LargeLogo.png");
+//		ImageIcon imgmodern = new ImageIcon("images/modern.png");
+//		ImageIcon imgnatural = new ImageIcon("images/natural.png");
+//		ImageIcon imgmidcentury = new ImageIcon("images/midcentury.png");
+//		ImageIcon imgvintage = new ImageIcon("images/vintage.png");
+//		ImageIcon imgcontry = new ImageIcon("images/contry.png");
+//        ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
 
 		
 		setLayout(null);
 		
-		JLabel smallLogoLabel = new JLabel(smallLogo);
-        smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
-		
+        JLabel firstImageLabel = new JLabel();
+        setLabelProperties(firstImageLabel, 1);
+        add(firstImageLabel);
         
-        
-        JButton[] imageButtons = new JButton[6];
+        JButton[] imageButtons = new JButton[5];
 
-        for (int i = 0; i < 6; i++) {
-            imageButtons[i] = new JButton();
-            setButtonProperties(imageButtons[i], i + 1);
-            addListener(imageButtons[i], i + 1);
-            add(imageButtons[i]);
+        for (int i = 2; i <= 6; i++) {
+            imageButtons[i - 2] = new JButton();
+            setButtonProperties(imageButtons[i - 2], i);
+            addListener(imageButtons[i - 2], i);
+            add(imageButtons[i - 2]);
+        }
+    }
+	
+	private void setLabelProperties(JLabel label, int index) {
+        ImageIcon icon = null;
+
+        switch (index) {
+            case 1:
+                icon = new ImageIcon("images/LargeLogo.png");
+                break;
         }
 
-        add(smallLogoLabel);
+        label.setIcon(icon);
+        label.setBounds(74, 72, 216, 243);
     }
 
     private void setButtonProperties(JButton button, int index) {
         ImageIcon icon = null;
 
         switch (index) {
-            case 1:
-                icon = new ImageIcon("images/modern.png");
-                break;
             case 2:
-                icon = new ImageIcon("images/natural.png");
+            	icon = new ImageIcon("images/modern.png");                
                 break;
             case 3:
-                icon = new ImageIcon("images/midcentury.png");
+            	icon = new ImageIcon("images/natural.png");                
                 break;
             case 4:
-                icon = new ImageIcon("images/northEu.png");
+            	icon = new ImageIcon("images/midcentury.png");
                 break;
             case 5:
                 icon = new ImageIcon("images/vintage.png");
