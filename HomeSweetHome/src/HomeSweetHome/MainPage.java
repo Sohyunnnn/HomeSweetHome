@@ -10,7 +10,7 @@ import java.awt.event.*;
 import HomeSweetHome.MainUI;
 
 public class MainPage extends JPanel{
-	private JLabel BestItemB = new JLabel("Best상품");
+	//private JLabel BestItemB = new JLabel("Best상품");
 	private JLabel vintageB = new JLabel("빈티지");
 	private JLabel modernB = new JLabel("모던");
 	private JLabel midcenturyB = new JLabel("미드센추리");
@@ -22,7 +22,9 @@ public class MainPage extends JPanel{
 	private JLabel bedB = new JLabel("침대");
 	private JLabel sofaB = new JLabel("소파");
 	private JTextField Mappingtf = new Mappingtf("검색");
-	private JSlider PriceSl = new JSlider();
+	private RangeSlider PriceSl = new RangeSlider(JSlider.HORIZONTAL, 0, 100000, 100000);
+	private String [] sort = {"최신순", "인기순", "높은가격순", "낮은가격순"};
+	private JComboBox<String> strCombo = new JComboBox<String>(sort);
 	
 	ImageIcon profileImg = new ImageIcon("images/profile.png");
 	Image pImg = profileImg.getImage();
@@ -31,7 +33,8 @@ public class MainPage extends JPanel{
 	ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
 	private JButton profileB = new JButton(updateIcon);
 	private RoundedButton LogoutB = new RoundedButton("로그아웃");
-	private JLabel PriceLabel = new JLabel("1000~50000");
+	private JLabel maxPriceLabel = new JLabel("1000000");
+	private JLabel minPriceLabel = new JLabel("1000");
 	
 	
 	public MainPage(MainUI mainUI) {
@@ -65,10 +68,9 @@ public class MainPage extends JPanel{
         smallLogoLabel.setBounds(16, 16, 262, 39);
 
         System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
+        strCombo.setBounds(843,141,70,22);
         
 
-		
-        PriceSl = new JSlider(JSlider.HORIZONTAL, 0, 100000, 100000);
         PriceSl.setPaintLabels(true);
         PriceSl.setPaintTicks(true);
         PriceSl.setPaintTrack(true);
@@ -77,10 +79,12 @@ public class MainPage extends JPanel{
         PriceSl.addChangeListener(new MyChangeListener());
         PriceSl.setBounds(522,151,200,18);
         PriceSl.setBackground(Color.WHITE);
-        PriceLabel.setBounds(457,143,39,18);
-        PriceLabel.setBackground(Color.WHITE);
+        maxPriceLabel.setBounds(457,143,39,18);
+        maxPriceLabel.setBackground(Color.WHITE);
+        minPriceLabel.setBounds(737,143,70,18);
+        minPriceLabel.setBackground(Color.WHITE);
 		
-		add(BestItemB);
+		//add(BestItemB);
 		add(vintageB);
 		add(modernB);
 		add(midcenturyB);
@@ -100,7 +104,9 @@ public class MainPage extends JPanel{
 		add(smallLogoLabel);
 		add(Mappingtf);
 		add(PriceSl);
-		add(PriceLabel);
+		add(maxPriceLabel);
+		add(minPriceLabel);
+		add(strCombo);
 		
 		setBackground(Color.WHITE);
 		
@@ -118,18 +124,40 @@ public class MainPage extends JPanel{
                 mainUI.showWishListPanel(); // WishListPanel로 전환
             }
         });
+    	strCombo.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			//@SuppressWarnings("unchecked")
+    			//콤보박스 눌렀을 때 리스너 구현
+
+    		}
+    	});
 		
 		
 	}
-		class MyChangeListener implements ChangeListener {
-			public void stateChanged(ChangeEvent e) {
-				//int minimum = PriceSl.getValue();
-				int maximum = PriceSl.getValue();
-				PriceLabel.setText("0~"+maximum);
-			}
-				
-
-			}
+	//이전에 썼던 Jslider 이베트 리스너
+//		class MyChangeListener implements ChangeListener {
+//			public void stateChanged(ChangeEvent e) {
+////				int minimum = PriceSl.getValue();
+////				int maximum = PriceSl.getValue();
+////				maxPriceLabel.setText(maximum);
+//				
+//				int minPrice = PriceSl.getLowValue();
+//	            int maxPrice = PriceSl.getHighValue();
+//	            maxPriceLabel.setText(String.valueOf(maxPrice));
+//	            minPriceLabel.setText(String.valueOf(minPrice));
+//			}
+//				
+//
+//			}
+	//챗지피티가 만들어준 체인지 리스너
+	class MyChangeListener implements ChangeListener {
+	    public void stateChanged(ChangeEvent e) {
+	        int minPrice = PriceSl.getLowValue();
+	        int maxPrice = PriceSl.getHighValue();
+	        maxPriceLabel.setText(String.valueOf(maxPrice));
+	        minPriceLabel.setText(String.valueOf(minPrice));
+	    }
+	}
 	
 	class Mappingtf extends JTextField {
 	    private String mapword;
@@ -161,6 +189,10 @@ public class MainPage extends JPanel{
 	    
 	}
 	
+
+	
 	
 
 }
+
+
