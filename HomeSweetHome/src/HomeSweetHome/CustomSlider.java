@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class DualThumbSlider extends JPanel {
+public class CustomSlider extends JPanel {
 
     private int minValue = 0;
     private int maxValue = 3000000;
@@ -21,7 +21,7 @@ public class DualThumbSlider extends JPanel {
     private JLabel upperLabel;
     private ChangeListener changeListener;
 
-    public DualThumbSlider() {
+    public CustomSlider() {
         setLayout(null); // null 레이아웃 설정
 
         lowerLabel = new JLabel("" + lowerValue, SwingConstants.CENTER);
@@ -115,7 +115,7 @@ public class DualThumbSlider extends JPanel {
         frame.setSize(280, 60);
         
 
-        DualThumbSlider slider = new DualThumbSlider();
+        CustomSlider slider = new CustomSlider();
         frame.add(slider);
 
         slider.addChangeListener(new ChangeListener() {

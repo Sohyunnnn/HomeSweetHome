@@ -18,7 +18,7 @@ public class MainPage extends JPanel {
     private JLabel bedB = new JLabel("침대");
     private JLabel sofaB = new JLabel("소파");
     private JTextField Mappingtf = new Mappingtf("검색");
-    private DualThumbSlider PriceSl = new DualThumbSlider();
+    private CustomSlider PriceSl = new CustomSlider();
     private String[] sort = {"최신순", "인기순", "높은가격순", "낮은가격순"};
     private JComboBox<String> strCombo = new JComboBox<String>(sort);
 
