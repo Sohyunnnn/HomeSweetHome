@@ -38,12 +38,11 @@ public class HintTextField extends JTextField {
     }
     
     protected void paintComponent(Graphics g) {
-        //if (getPassword().length == 0 && !hasFocus()) { <- 이부분은 패스워드필드에만 필요해서 그냥 뺌
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setColor(Color.GRAY);
             g2.drawString(hint, 5, 15); // Adjust the position of the hint text as needed
             g2.dispose();
-        //}
+      
 
         g.setColor(getBackground());
         g.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 15, 15);

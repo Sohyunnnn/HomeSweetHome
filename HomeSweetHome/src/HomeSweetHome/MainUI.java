@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-//import HomeSweetHome.HintTextField;
+
 
 
 public class MainUI extends JFrame {
@@ -149,7 +149,6 @@ class SignUpPanel extends JPanel {
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, 262, 39);
 
-        //System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
 
         welcomeMent.setBounds(36, 260, 287, 153);
         idInput.setBounds(487, 107, 425, 59);
@@ -201,7 +200,6 @@ class LogInPanel extends JPanel {
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
 
-        //System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
 
 
         loginButton.setBounds(146, 419, 260, 59);
@@ -233,7 +231,7 @@ class ImagePanel extends JPanel {
         setLayout(null);
 
         JLabel largerLogoLabel = new JLabel();
-        setLabelProperties(largerLogoLabel, 6); // LargerLogo를 "images/LargeLogo.png"로 설정
+        setLabelProperties(largerLogoLabel, 6);
         add(largerLogoLabel);
 
         JButton[] imageButtons = new JButton[5];

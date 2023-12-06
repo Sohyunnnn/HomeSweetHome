@@ -6,8 +6,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicSliderUI;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 
 public class RangeSlider extends JSlider {
