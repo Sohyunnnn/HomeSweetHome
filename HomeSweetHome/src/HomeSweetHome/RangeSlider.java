@@ -61,9 +61,9 @@ public class RangeSlider extends JSlider {
         firePropertyChange("highValue", oldValue, this.highValue);
         if (this.highValue != oldValue) {
             setValueIsAdjusting(true);
+            super.setValue(this.highValue);
             fireStateChanged();
             setValueIsAdjusting(false);
-            setValue(lowValue);
         }
     }
 
