@@ -149,7 +149,7 @@ class SignUpPanel extends JPanel {
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, 262, 39);
 
-        System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
+        //System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
 
         welcomeMent.setBounds(36, 260, 287, 153);
         idInput.setBounds(487, 107, 425, 59);
@@ -201,7 +201,7 @@ class LogInPanel extends JPanel {
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
 
-        System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
+        //System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
 
 
         loginButton.setBounds(146, 419, 260, 59);
@@ -220,7 +220,6 @@ class LogInPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainUI.showImagePanel(); // StartPanel로 전환 
-                //이미지 클릭하는 패널 추가해서 이미지 패널로 넘어가게 수정
             }
         });
     }
