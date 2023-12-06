@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class DualThumbSlider extends JPanel {
+public class CustomSlider extends JPanel {
 
     private int minValue = 0;
     private int maxValue = 3000000;
@@ -21,14 +21,13 @@ public class DualThumbSlider extends JPanel {
     private JLabel upperLabel;
     private ChangeListener changeListener;
 
-    public DualThumbSlider() {
-        setLayout(null); // null 레이아웃 설정
-
+    public CustomSlider() {
+        setLayout(null); 
         lowerLabel = new JLabel("" + lowerValue, SwingConstants.CENTER);
         upperLabel = new JLabel("" + upperValue, SwingConstants.CENTER);
 
-        lowerLabel.setBounds(0, 40, 50, 20); // 예시 위치 지정
-        upperLabel.setBounds(200, 40, 50, 20); // 예시 위치 지정
+        lowerLabel.setBounds(0, 40, 50, 20);
+        upperLabel.setBounds(200, 40, 50, 20); 
 
         add(lowerLabel);
         add(upperLabel);
@@ -47,7 +46,6 @@ public class DualThumbSlider extends JPanel {
             }
         });
 
-        //setBackground(Color.LIGHT_GRAY);
         setBackground(Color.WHITE);
     }
 
@@ -95,27 +93,22 @@ public class DualThumbSlider extends JPanel {
         int upperThumbX = (int) ((double) (upperValue - minValue) / (maxValue - minValue) * barWidth);
 
         g.setColor(Color.GRAY);
-        //g.fillRect(thumbDiameter / 2, getHeight() / 2 - barHeight / 2, barWidth, barHeight);
         g.fillRect(thumbDiameter / 2, 25- barHeight / 2, barWidth, barHeight);
 
         g.setColor(Color.RED);
-        //g.fillOval(lowerThumbX, getHeight() / 2 - thumbDiameter / 2, thumbDiameter, thumbDiameter);
         g.fillOval(lowerThumbX, 25 - thumbDiameter / 2, thumbDiameter, thumbDiameter);
 
         g.setColor(Color.BLUE);
-        //g.fillOval(upperThumbX, getHeight() / 2 - thumbDiameter / 2, thumbDiameter, thumbDiameter);
         g.fillOval(upperThumbX, 25 - thumbDiameter / 2, thumbDiameter, thumbDiameter);
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Dual Thumb Slider");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.setSize(260, 85);
-        //frame.setSize(280, 60);
         frame.setSize(280, 60);
         
 
-        DualThumbSlider slider = new DualThumbSlider();
+        CustomSlider slider = new CustomSlider();
         frame.add(slider);
 
         slider.addChangeListener(new ChangeListener() {

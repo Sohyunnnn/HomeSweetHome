@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-//import HomeSweetHome.HintTextField;
+
 
 
 public class MainUI extends JFrame {
@@ -149,7 +149,6 @@ class SignUpPanel extends JPanel {
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, 262, 39);
 
-        //System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
 
         welcomeMent.setBounds(36, 260, 287, 153);
         idInput.setBounds(487, 107, 425, 59);
@@ -201,7 +200,6 @@ class LogInPanel extends JPanel {
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
 
-        //System.out.println("smallLogoLabel bounds: " + smallLogoLabel.getBounds());
 
 
         loginButton.setBounds(146, 419, 260, 59);
@@ -226,72 +224,62 @@ class LogInPanel extends JPanel {
 }
 
 class ImagePanel extends JPanel { 
-	private MainUI mainUI;
-	public ImagePanel(MainUI mainUI) {
-		this.mainUI = mainUI;
-//		GridLayout layout = new GridLayout(2,3);
-//		setLayout(layout);
-//		ImageIcon imgLargeLogo = new ImageIcon("images/LargeLogo.png");
-//		ImageIcon imgmodern = new ImageIcon("images/modern.png");
-//		ImageIcon imgnatural = new ImageIcon("images/natural.png");
-//		ImageIcon imgmidcentury = new ImageIcon("images/midcentury.png");
-//		ImageIcon imgvintage = new ImageIcon("images/vintage.png");
-//		ImageIcon imgcontry = new ImageIcon("images/contry.png");
-//        ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
+    private MainUI mainUI;
 
-		
-		setLayout(null);
-		
-        JLabel firstImageLabel = new JLabel();
-        setLabelProperties(firstImageLabel, 1);
-        add(firstImageLabel);
-        
+    public ImagePanel(MainUI mainUI) {
+        this.mainUI = mainUI;
+        setLayout(null);
+
+        JLabel largerLogoLabel = new JLabel();
+        setLabelProperties(largerLogoLabel, 6);
+        add(largerLogoLabel);
+
         JButton[] imageButtons = new JButton[5];
 
-        for (int i = 2; i <= 6; i++) {
-            imageButtons[i - 2] = new JButton();
-            setButtonProperties(imageButtons[i - 2], i);
-            addListener(imageButtons[i - 2], i);
-            add(imageButtons[i - 2]);
+        for (int i = 1; i <= 5; i++) {
+            imageButtons[i - 1] = new JButton();
+            setButtonProperties(imageButtons[i - 1], i);
+            addListener(imageButtons[i - 1], i);
+            add(imageButtons[i - 1]);
         }
     }
-	
-	private void setLabelProperties(JLabel label, int index) {
+
+    private void setLabelProperties(JLabel label, int index) {
         ImageIcon icon = null;
 
         switch (index) {
-            case 1:
+            case 6:
                 icon = new ImageIcon("images/LargeLogo.png");
                 break;
         }
 
         label.setIcon(icon);
-        label.setBounds(74, 72, 216, 243);
+        label.setBounds(684,344, 216, 243); // 라벨 위치 설정
     }
 
     private void setButtonProperties(JButton button, int index) {
         ImageIcon icon = null;
 
         switch (index) {
+            case 1:
+                icon = new ImageIcon("images/modern.png");
+                break;
             case 2:
-            	icon = new ImageIcon("images/modern.png");                
+                icon = new ImageIcon("images/natural.png");
                 break;
             case 3:
-            	icon = new ImageIcon("images/natural.png");                
+                icon = new ImageIcon("images/midcentury.png");
                 break;
             case 4:
-            	icon = new ImageIcon("images/midcentury.png");
-                break;
-            case 5:
                 icon = new ImageIcon("images/vintage.png");
                 break;
-            case 6:
+            case 5:
                 icon = new ImageIcon("images/contry.png");
                 break;
         }
 
         button.setIcon(icon);
-        button.setBounds((index - 1) % 3 * 309 + 53, (index - 1) / 3 * 301 + 64, 260, 260);
+        button.setBounds((index - 1) % 3 * 309 + 43, (index - 1) / 3 * 301 + 34, 260, 260);
     }
 
     private void addListener(JButton button, final int index) {
@@ -303,6 +291,7 @@ class ImagePanel extends JPanel {
         });
     }
 }
+
 
 class WishListPanel extends JPanel {
     public WishListPanel(MainUI mainUI) {

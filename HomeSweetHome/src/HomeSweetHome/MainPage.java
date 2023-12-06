@@ -18,7 +18,7 @@ public class MainPage extends JPanel {
     private JLabel bedB = new JLabel("침대");
     private JLabel sofaB = new JLabel("소파");
     private JTextField Mappingtf = new Mappingtf("검색");
-    private DualThumbSlider PriceSl = new DualThumbSlider();
+    private CustomSlider PriceSl = new CustomSlider();
     private String[] sort = {"최신순", "인기순", "높은가격순", "낮은가격순"};
     private JComboBox<String> strCombo = new JComboBox<String>(sort);
 
@@ -34,7 +34,6 @@ public class MainPage extends JPanel {
 
     public MainPage(MainUI mainUI) {
         setLayout(null);
-        //setLayout(new BorderLayout());
 
         vintageB.setBounds(103, 84, 93, 24);
         modernB.setBounds(277, 84, 93, 24);
@@ -64,14 +63,7 @@ public class MainPage extends JPanel {
         strCombo.setBounds(843, 141, 70, 22);
 
         // PriceSl 위치 설정
-        int width = (int) PriceSl.getBounds().getWidth();
-        int height = (int) PriceSl.getBounds().getHeight();
-        //PriceSl.setBounds(152, 644, width, height);
-        //PriceSl.setBounds(152, 644, 270,90);
         PriceSl.setBounds(510, 113, 250, 70);
-        
-        //System.out.println(width);
-        //System.out.println(height);
 
         add(vintageB);
         add(modernB);
