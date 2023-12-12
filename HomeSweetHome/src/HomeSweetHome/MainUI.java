@@ -65,8 +65,8 @@ public class MainUI extends JFrame {
     }
     
     public void showMainPage() {
-//    	int selectedStyleCode = imagePanel.getSelectedStyleCode();
-//    	mainPage.filterProductsByStyle(selectedStyleCode);
+    	int selectedStyleCode = imagePanel.getSelectedStyleCode();
+    	mainPage.filterProductsByStyle(selectedStyleCode);
     	
         cardLayout.show(cardPanel, "MainPage");
     }
@@ -228,7 +228,7 @@ class LogInPanel extends JPanel {
 
 class ImagePanel extends JPanel { 
     private MainUI mainUI;
-    //private int selectedStyleCode;
+    private int selectedStyleCode;
 
     public ImagePanel(MainUI mainUI) {
         this.mainUI = mainUI;
@@ -290,14 +290,14 @@ class ImagePanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	//selectedStyleCode = index;
+            	selectedStyleCode = index;
                 mainUI.showMainPage();
             }
         });
     }
-//    public int getSelectedStyleCode() {
-//        return selectedStyleCode;
-//    }
+    public int getSelectedStyleCode() {
+        return selectedStyleCode;
+    }
 }
 
 
