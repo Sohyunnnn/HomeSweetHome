@@ -5,6 +5,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class MainPage extends JPanel {
     private JLabel vintageB = new JLabel("빈티지");
@@ -31,10 +35,16 @@ public class MainPage extends JPanel {
     private RoundedButton LogoutB = new RoundedButton("로그아웃");
     private JLabel maxPriceLabel = new JLabel("1000000");
     private JLabel minPriceLabel = new JLabel("1000");
+    
+//    private ArrayList<ProductLabel> productComponents;
+    private databaseConnect databaseConnect;
+//    private int styleCode;
 
     public MainPage(MainUI mainUI) {
         setLayout(null);
 
+        databaseConnect = new databaseConnect();
+        
         vintageB.setBounds(103, 84, 93, 24);
         modernB.setBounds(277, 84, 93, 24);
         midcenturyB.setBounds(438, 84, 93, 24);
@@ -87,6 +97,19 @@ public class MainPage extends JPanel {
         add(strCombo);
 
         setBackground(Color.WHITE);
+//        productComponents = new ArrayList<>();
+//        
+//        
+//        vintageB.addMouseListener(new StyleButtonListener(2));  // 1은 vintage 스타일 코드
+//        modernB.addMouseListener(new StyleButtonListener(1));   // 2는 modern 스타일 코드
+//        midcenturyB.addMouseListener(new StyleButtonListener(3));  // 3은 midcentury 스타일 코드
+//        contryB.addMouseListener(new StyleButtonListener(4));    // 4는 country 스타일 코드
+//        naturalB.addMouseListener(new StyleButtonListener(5)); 
+
+        // 상품 컴포넌트를 추가하는 메서드 호출
+       // addProductComponents();
+        
+        
         
 
         LogoutB.addActionListener(new ActionListener() {
@@ -121,6 +144,86 @@ public class MainPage extends JPanel {
         
         
     }
+//    private void addProductComponents() {
+//    	try {
+//            ResultSet resultSet = databaseConnect.getProducts(styleCode);
+//            while (resultSet.next()) {
+//            	
+//                int productsPerRow = 4;
+//                int xInitial = 45;
+//                int yInitial = 260;
+//                int xGap = 15;
+//                int yGap = 40;
+//
+//                int i = 0;
+//                while (i < 117 && resultSet.next()) {
+//                	String product_name = resultSet.getString("product_name");
+//                    String product_price = resultSet.getString("product_price");
+//                    String product_img = resultSet.getString("product_img");
+//
+//                    ProductLabel productLabel = createProductLabel(product_name, product_price, product_img);
+//
+//                	
+//                    int row = i / productsPerRow;
+//                    int col = i % productsPerRow;
+//
+//                    int x = xInitial + col * (200 + xGap);
+//                    int y = yInitial + row * (220 + yGap);
+//
+//                    productLabel.setBounds(x, y, 200, 220);
+//                    productComponents.add(productLabel);
+//                    add(productLabel);
+//                    
+//                    i++;
+//                }
+//                // 데이터 검색이 완료된 후 ResultSet을 닫음
+//                //resultSet.close();
+//
+//                // UI 다시 그리기
+//                revalidate();
+//                repaint();
+//            }
+//    	} catch (SQLException e) {
+//    	    System.err.println("SQL Exception: " + e.getMessage());
+//    	    e.printStackTrace();
+//    	} catch (Exception e) {
+//    	    System.err.println("Exception: " + e.getMessage());
+//    	    e.printStackTrace();
+//    	}
+//    }
+//    
+//    	
+//    private ProductLabel createProductLabel(String product_name, String product_price, String product_img) {
+//        ImageIcon productImage = new ImageIcon(product_img);
+//        
+//        ProductLabel productLabel = new ProductLabel(product_name, String.valueOf(product_price), productImage);
+//
+//        // ProductLabel 내부의 컴포넌트 크기 및 배치 설정
+//        productLabel.setLayout(null);
+//        
+//        productLabel.setBackground(new Color(139, 158, 211));
+//
+//        // 이미지 크기 및 위치
+//        JLabel imageLabel = new JLabel(productImage);
+//        imageLabel.setBounds(15, 15, 170, 150);
+//
+//        // 상품 이름 라벨
+//        JLabel nameLabel = new JLabel(product_name);
+//        nameLabel.setBounds(15, 170, 170, 20);
+//        nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//
+//        // 상품 가격 라벨
+//        JLabel priceLabel = new JLabel(String.valueOf(product_price));
+//        priceLabel.setBounds(15, 190, 170, 20);
+//        priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//
+//        // ProductLabel에 컴포넌트 추가
+//        productLabel.add(imageLabel);
+//        productLabel.add(nameLabel);
+//        productLabel.add(priceLabel);
+//
+//        return productLabel;
+//    }
 
     class Mappingtf extends JTextField {
         private String mapword;
@@ -150,4 +253,118 @@ public class MainPage extends JPanel {
             });
         }
     }
+    
+//    public static class ProductLabel extends JLabel {
+//        public ProductLabel(String name, String price, Icon image) {
+//            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // 세로로 나열되도록 설정
+//
+//            JLabel nameLabel = new JLabel(name);
+//            JLabel priceLabel = new JLabel(price);
+//            JLabel imageLabel = new JLabel(image);
+//
+//            add(nameLabel);
+//            add(priceLabel);
+//            add(imageLabel);
+//        }
+//    }
+//    
+//    
+//    private class StyleButtonListener extends MouseAdapter {
+//    	private int styleCode;
+//
+//        public StyleButtonListener(int styleCode) {
+//            this.styleCode = styleCode;
+//        }
+//
+//        @Override
+//        public void mouseClicked(MouseEvent e) {
+//        	setStyleCode(styleCode);
+//            filterProductsByStyle(styleCode);
+//        }
+//    }
+//    private void setStyleCode(int styleCode) {
+//        this.styleCode = styleCode;
+//    }
+//    
+//    
+//    public void filterProductsByStyle(int styleCode) {
+//    	ResultSet resultSet = null;
+//        try {
+//            resultSet = databaseConnect.getProducts(styleCode);
+//            if (resultSet != null && !resultSet.isClosed()) {
+//                updateProductComponents(resultSet);
+//            } else {
+//                System.out.println("ResultSet is null or closed.");
+//            }
+//            resultSet.close();
+//            
+//        } catch (SQLException e) {
+//            System.err.println("SQL Exception: " + e.getMessage());
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            System.err.println("Exception: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//        
+//    }
+//    private void updateProductComponents(ResultSet resultSet) {
+//    	 try {
+//    	        // resultSet이 닫혀 있는지 확인
+//    	        if (resultSet.isClosed()) {
+//    	            System.out.println("ResultSet is closed.");
+//    	            return;
+//    	        }
+//
+//    	        // 기존 상품 컴포넌트 제거
+//    	        for (ProductLabel productLabel : productComponents) {
+//    	            remove(productLabel);
+//    	        }
+//    	        productComponents.clear();
+//
+//    	        int productsPerRow = 4;
+//    	        int xInitial = 45;
+//    	        int yInitial = 260;
+//    	        int xGap = 15;
+//    	        int yGap = 40;
+//
+//    	        int i = 0;
+//    	        while (resultSet.next()) {
+//    	        	String product_name = resultSet.getString("product_name");
+//    	            String product_price = resultSet.getString("product_price");
+//    	            String product_img = resultSet.getString("product_img");
+//
+//    	            ProductLabel productLabel = createProductLabel(product_name, product_price, product_img);
+//
+//    	            int row = i / productsPerRow;
+//    	            int col = i % productsPerRow;
+//
+//    	            int x = xInitial + col * (200 + xGap);
+//    	            int y = yInitial + row * (220 + yGap);
+//
+//    	            productLabel.setBounds(x, y, 200, 220);
+//    	            productComponents.add(productLabel);
+//    	            add(productLabel);
+//    	            
+//    	            i++;
+//    	        }
+//    	        
+//
+//    	        // UI 다시 그리기
+//    	        revalidate();
+//    	        repaint();
+//    	        
+//    	        
+//    	        //databaseConnect.close(null, null, resultSet);
+//    	 } catch (SQLException e) {
+//    		    System.err.println("SQL Exception: " + e.getMessage());
+//    		    e.printStackTrace();
+//    		} catch (Exception e) {
+//    		    System.err.println("Exception: " + e.getMessage());
+//    		    e.printStackTrace();
+//    		}
+////    		 } finally {
+////    		        // 사용이 끝난 후 ResultSet을 닫아줍니다.
+////    		        databaseConnect.close(null, null, resultSet);
+////    		}
+//    	}
 }

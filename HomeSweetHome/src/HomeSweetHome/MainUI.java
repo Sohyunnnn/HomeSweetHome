@@ -65,6 +65,9 @@ public class MainUI extends JFrame {
     }
     
     public void showMainPage() {
+//    	int selectedStyleCode = imagePanel.getSelectedStyleCode();
+//    	mainPage.filterProductsByStyle(selectedStyleCode);
+    	
         cardLayout.show(cardPanel, "MainPage");
     }
 
@@ -225,6 +228,7 @@ class LogInPanel extends JPanel {
 
 class ImagePanel extends JPanel { 
     private MainUI mainUI;
+    //private int selectedStyleCode;
 
     public ImagePanel(MainUI mainUI) {
         this.mainUI = mainUI;
@@ -265,13 +269,13 @@ class ImagePanel extends JPanel {
                 icon = new ImageIcon("images/modern.png");
                 break;
             case 2:
-                icon = new ImageIcon("images/natural.png");
+                icon = new ImageIcon("images/vintage.png");
                 break;
             case 3:
                 icon = new ImageIcon("images/midcentury.png");
                 break;
             case 4:
-                icon = new ImageIcon("images/vintage.png");
+                icon = new ImageIcon("images/natural.png");
                 break;
             case 5:
                 icon = new ImageIcon("images/contry.png");
@@ -286,10 +290,14 @@ class ImagePanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	//selectedStyleCode = index;
                 mainUI.showMainPage();
             }
         });
     }
+//    public int getSelectedStyleCode() {
+//        return selectedStyleCode;
+//    }
 }
 
 
