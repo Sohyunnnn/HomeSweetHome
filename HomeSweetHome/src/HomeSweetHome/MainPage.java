@@ -39,7 +39,18 @@ public class MainPage extends JPanel {
     private ArrayList<ProductPanel> productComponents;
     private databaseConnect databaseConnect;
     private int styleCode;
+    private JScrollPane scrollPane;
+    private JPanel productPanelContainer;
+    
+//    ImageIcon whiteHeartImg = new ImageIcon("images/whiteHeart.png");
+//    Image wImg = whiteHeartImg.getImage();
+//    Image whiteHeart = wImg.getScaledInstance(22, 22, Image.SCALE_SMOOTH);
+//    ImageIcon whiteHeartIcon = new ImageIcon(whiteHeart);
+//    private JButton productWish = new JButton(whiteHeartIcon);
+//    
+//    ImageIcon redHeartImg = new ImageIcon("images/redHeart.png");
 
+    
     public MainPage(MainUI mainUI) {
         setLayout(null);
 
@@ -63,17 +74,28 @@ public class MainPage extends JPanel {
         profileB.setBounds(882, 16, 45, 45);
         profileB.setBorderPainted(false);
         profileB.setContentAreaFilled(false);
-        profileB.setFocusPainted(false);
+        profileB.setFocusPainted(false);             
 
         profileB.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, 262, 39);
 
+//        productWish.setBounds(141,122,22,22);
+//        productWish.setBorderPainted(false);
+//        productWish.setContentAreaFilled(false);
+//        productWish.setFocusPainted(false);
+//        productWish.setIcon(whiteHeartIcon);
+//        productWish.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//        productWish.setRolloverIcon(redHeartImg);
+        
         strCombo.setBounds(843, 141, 70, 22);
 
         // PriceSl 위치 설정
         PriceSl.setBounds(510, 113, 250, 70);
+        
+        productPanelContainer = new JPanel();
+        productPanelContainer.setLayout(null);
 
         add(vintageB);
         add(modernB);
@@ -95,10 +117,17 @@ public class MainPage extends JPanel {
         add(maxPriceLabel);
         add(minPriceLabel);
         add(strCombo);
+        
 
         setBackground(Color.WHITE);
         productComponents = new ArrayList<>();
         
+        productPanelContainer.setPreferredSize(new Dimension(1000, 2000));
+        //productPanelContainer.setBounds(0,200, 1000, 2000);
+        productPanelContainer.setBackground(Color.WHITE);
+        scrollPane = new JScrollPane(productPanelContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBounds(0, 200, 974, 430);
+        add(scrollPane);
         
         vintageB.addMouseListener(new StyleButtonListener(2));  // 2는 vintage 스타일 코드
         modernB.addMouseListener(new StyleButtonListener(1));   // 1은 modern 스타일 코드
@@ -143,7 +172,8 @@ public class MainPage extends JPanel {
         
     }
 
-    
+    public JScrollPane getScrollPane() {	
+    	return scrollPane;	}
     	
     private ProductPanel createProductPanel(String product_name, String product_price, String product_img) {
         ImageIcon productImage = new ImageIcon(product_img);
@@ -169,10 +199,23 @@ public class MainPage extends JPanel {
         priceLabel.setBounds(15, 190, 170, 20);
         priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
+        // 찜 버튼 추가
+//        productWish.setBounds(141,122,22,22);
+//        productWish.setBorderPainted(false);
+//        productWish.setContentAreaFilled(false);
+//        productWish.setFocusPainted(false);
+//        productWish.setIcon(whiteHeartIcon);
+//        profileB.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
         // ProductLabel에 컴포넌트 추가
+        
+
+        //imageLabel.add(productWish);
         productPanel.add(imageLabel);
         productPanel.add(nameLabel);
         productPanel.add(priceLabel);
+        //productPanel.add(productWish);
+        
 
         return productPanel;
     }
@@ -207,16 +250,63 @@ public class MainPage extends JPanel {
     }
     
     public static class ProductPanel extends JPanel {
+
+    	private JButton productWish;
+        private static final ImageIcon whiteHeartIcon;
+        private static final ImageIcon redHeartIcon;
+
+        static {
+            ImageIcon whiteHeartImg = new ImageIcon("images/whiteHeart.png");
+            Image wImg = whiteHeartImg.getImage();
+            Image whiteHeart = wImg.getScaledInstance(22, 22, Image.SCALE_SMOOTH);
+            whiteHeartIcon = new ImageIcon(whiteHeart);
+
+            ImageIcon redHeartImg = new ImageIcon("images/redHeart.png");
+            Image rImg = redHeartImg.getImage();
+            Image redHeart = rImg.getScaledInstance(22, 22, Image.SCALE_SMOOTH);
+            redHeartIcon = new ImageIcon(redHeart);
+        }
+        
         public ProductPanel(String name, String price, Icon image) {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // 세로로 나열되도록 설정
+            productWish = new JButton(whiteHeartIcon);
+            
+         // ProductPanel에 사용될 버튼 정의
+            productWish = new JButton(whiteHeartIcon);
+            
+            ImageIcon redHeartImg = new ImageIcon("images/redHeart.png");
 
             JLabel nameLabel = new JLabel(name);
             JLabel priceLabel = new JLabel(price);
             JLabel imageLabel = new JLabel(image);
+            
+            productWish.setBounds(156,137,22,22);
+            productWish.setBorderPainted(false);
+            productWish.setContentAreaFilled(false);
+            productWish.setFocusPainted(false);
+            productWish.setIcon(whiteHeartIcon);
+            productWish.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            productWish.setPressedIcon(redHeartImg);
+            productWish.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    toggleHeartIcon();
+                }
+            });
+
 
             add(nameLabel);
             add(priceLabel);
             add(imageLabel);
+            add(productWish);
+        }
+        
+        private void toggleHeartIcon() {
+            if (productWish.getIcon().equals(whiteHeartIcon)) {
+                productWish.setIcon(redHeartIcon);
+            } else {
+                productWish.setIcon(whiteHeartIcon);
+            }
         }
     }
     
@@ -272,11 +362,13 @@ public class MainPage extends JPanel {
     	        for (ProductPanel productPanel : productComponents) {
     	            remove(productPanel);
     	        }
+    	        
+    	        productPanelContainer.removeAll();
     	        productComponents.clear();
     	        //addProductComponents();
     	        int productsPerRow = 4;
     	        int xInitial = 45;
-    	        int yInitial = 220;
+    	        int yInitial = 20;
     	        int xGap = 25;
     	        int yGap = 40;
 
@@ -296,7 +388,7 @@ public class MainPage extends JPanel {
 
     	            productPanel.setBounds(x, y, 200, 220);
     	            productComponents.add(productPanel);
-    	            add(productPanel);
+    	            productPanelContainer.add(productPanel);
     	            
     	            i++;
     	        }
@@ -315,4 +407,6 @@ public class MainPage extends JPanel {
     		}
 
     	}
+    
+    
 }
