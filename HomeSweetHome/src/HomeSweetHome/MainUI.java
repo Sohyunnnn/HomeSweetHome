@@ -224,6 +224,7 @@ class LogInPanel extends JPanel {
     	setLayout(null);
 
         RoundedButton loginButton = new RoundedButton("로그인");
+        
         HintTextField checkidInput = new HintTextField("로그인");
         HintPasswordField checkpasswordInput = new HintPasswordField("비밀번호");
         
@@ -259,7 +260,27 @@ class LogInPanel extends JPanel {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainUI.showImagePanel(); // StartPanel로 전환 
+                String username = checkidInput.getText();
+                String password = new String(checkpasswordInput.getPassword());
+
+                try {
+                    if (databaseConnect.isUserExists(username)) {
+                        // 사용자가 존재하는 경우
+                        if (databaseConnect.checkPassword(username, password)) {
+                            // 비밀번호가 일치하는 경우
+                            mainUI.showImagePanel(); // ImagePanel로 전환
+                        } else {
+                            // 비밀번호가 일치하지 않는 경우
+                            JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.", "로그인 실패", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        // 사용자가 존재하지 않는 경우
+                        JOptionPane.showMessageDialog(null, "사용자가 존재하지 않습니다.", "로그인 실패", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    // 예외 처리
+                    ex.printStackTrace(); // 또는 다른 예외 처리 로직을 추가할 수 있음
+                }
             }
         });
     }
