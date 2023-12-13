@@ -199,6 +199,7 @@ class SignUpPanel extends JPanel {
                     // 사용자 정보를 데이터베이스에 저장
                     if (databaseConnect.storeUserInDatabase(username, password)) {
                         // 등록 성공
+                    	JOptionPane.showMessageDialog(null, "환영합니다. 회원가입에 성공했습니다.", "회원가입 성공", JOptionPane.PLAIN_MESSAGE);
                         mainUI.showStartPanel();
                     } else {
                         // 등록 실패
