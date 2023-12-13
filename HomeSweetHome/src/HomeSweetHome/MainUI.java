@@ -60,6 +60,7 @@ public class MainUI extends JFrame {
     public void showImagePanel() {
         cardLayout.show(cardPanel, "image");
     }
+    
     public void showWishListPanel() {
         cardLayout.show(cardPanel, "WishList");
     }
@@ -67,6 +68,7 @@ public class MainUI extends JFrame {
     public void showMainPage() {
     	int selectedStyleCode = imagePanel.getSelectedStyleCode();
     	mainPage.filterProductsByStyle(selectedStyleCode);
+    	mainPage.getScrollPane().requestFocusInWindow();
     	
         cardLayout.show(cardPanel, "MainPage");
     }
