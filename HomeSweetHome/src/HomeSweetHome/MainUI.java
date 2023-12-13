@@ -268,6 +268,7 @@ class LogInPanel extends JPanel {
                         // 사용자가 존재하는 경우
                         if (databaseConnect.checkPassword(username, password)) {
                             // 비밀번호가 일치하는 경우
+                        	JOptionPane.showMessageDialog(null, "로그인에 성공했습니다.", "로그인 성공", JOptionPane.PLAIN_MESSAGE);
                             mainUI.showImagePanel(); // ImagePanel로 전환
                         } else {
                             // 비밀번호가 일치하지 않는 경우
