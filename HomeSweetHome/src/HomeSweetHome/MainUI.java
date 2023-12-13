@@ -33,7 +33,7 @@ public class MainUI extends JFrame {
         logInPanel = new LogInPanel(this);
         imagePanel = new ImagePanel(this);
         wishListPanel = new WishListPanel(this);
-        mainPage = new MainPage(this);
+        mainPage = new MainPage(this,getLoggedInUserID());
 
         cardPanel.add(startPanel, "start");
         cardPanel.add(signUpPanel, "signUp");
@@ -73,6 +73,11 @@ public class MainUI extends JFrame {
     	
         cardLayout.show(cardPanel, "MainPage");
     }
+    
+    public String getLoggedInUserID() {
+        return logInPanel.getLoggedInUserID();
+    }
+
 
     public static void main(String[] args) {
         new MainUI();
@@ -220,35 +225,39 @@ class SignUpPanel extends JPanel {
 
 
 class LogInPanel extends JPanel {
+	private String loggedInUserID;
+	
+	public void setLoggedInUserID(String userID) {
+        this.loggedInUserID = userID;
+    }
+	
     public LogInPanel(MainUI mainUI) {
-    	setLayout(null);
+        setLayout(null);
 
         RoundedButton loginButton = new RoundedButton("로그인");
-        
+
         HintTextField checkidInput = new HintTextField("로그인");
         HintPasswordField checkpasswordInput = new HintPasswordField("비밀번호");
-        
+
         Font customFont = new Font("굴림체", Font.PLAIN, 27);
         loginButton.setCustomFont(customFont);
         loginButton.setBackground(new Color(0x16, 0x3A, 0x9C)); // 배경색 설정
         loginButton.setForeground(new Color(255, 255, 255)); // 글자색 설정
-        
+
         ImageIcon logInShape = new ImageIcon("images/logInShape.png");
-        
+
         ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
-        
+
         JLabel logInShapeLabel = new JLabel(logInShape);
         logInShapeLabel.setBounds(530, 0, logInShape.getIconWidth(), logInShape.getIconHeight());
-        
+
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
-
-
 
         loginButton.setBounds(146, 419, 260, 59);
         checkidInput.setBounds(67, 129, 425, 59);
         checkpasswordInput.setBounds(67, 268, 425, 59);
-        
+
         add(checkidInput);
         add(checkpasswordInput);
         add(loginButton);
@@ -264,11 +273,15 @@ class LogInPanel extends JPanel {
                 String password = new String(checkpasswordInput.getPassword());
 
                 try {
+                    String loggedInUserID = null;
+
                     if (databaseConnect.isUserExists(username)) {
                         // 사용자가 존재하는 경우
-                        if (databaseConnect.checkPassword(username, password)) {
+                        loggedInUserID = databaseConnect.checkPassword(username, password);
+
+                        if (loggedInUserID != null) {
                             // 비밀번호가 일치하는 경우
-                        	JOptionPane.showMessageDialog(null, "로그인에 성공했습니다.", "로그인 성공", JOptionPane.PLAIN_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "로그인에 성공했습니다.", "로그인 성공", JOptionPane.PLAIN_MESSAGE);
                             mainUI.showImagePanel(); // ImagePanel로 전환
                         } else {
                             // 비밀번호가 일치하지 않는 경우
@@ -282,10 +295,15 @@ class LogInPanel extends JPanel {
                     // 예외 처리
                     ex.printStackTrace(); // 또는 다른 예외 처리 로직을 추가할 수 있음
                 }
+
             }
         });
     }
+    public String getLoggedInUserID() {
+        return loggedInUserID;
+    }
 }
+
 
 class ImagePanel extends JPanel { 
     private MainUI mainUI;
@@ -352,7 +370,7 @@ class ImagePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             	selectedStyleCode = index;
-                mainUI.showMainPage();
+            	mainUI.showMainPage();
             }
         });
     }
