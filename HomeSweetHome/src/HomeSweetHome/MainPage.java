@@ -169,6 +169,13 @@ public class MainPage extends JPanel {
         profileB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	
+            	// profileB 버튼을 누를 때 loggedInUserID 값을 가져와서
+                String loggedInUserID = mainUI.getLoggedInUserID();
+
+                // WishListPanel에 해당 값을 전달
+                mainUI.getWishListPanel().setLoggedInUserID(loggedInUserID);
+            	
                 mainUI.showWishListPanel();
             }
         });

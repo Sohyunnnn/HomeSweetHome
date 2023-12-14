@@ -4,7 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.awt.event.MouseAdapter; 
+import java.awt.event.MouseEvent; 
 
 
 
@@ -84,6 +87,11 @@ public class MainUI extends JFrame {
     public static void main(String[] args) {
         new MainUI();
     }
+    
+    public WishListPanel getWishListPanel() {
+        return wishListPanel;
+    }
+
 }
 
 class StartPanel extends JPanel {
@@ -390,16 +398,25 @@ class ImagePanel extends JPanel {
 
 
 class WishListPanel extends JPanel {
+	
+	private JLabel id;
+	
     public WishListPanel(MainUI mainUI) {
         setLayout(null);
+        
+        //idLabel = new JLabel();
 
-        JLabel id = new JLabel("아이디");
+        id = new JLabel();
         RoundedButton SignUpConfirmation = new RoundedButton("확인");//나중에 삭제 할 코드
-        JButton logOut = new JButton("로그아웃");
+        JLabel logOut = new JLabel("로그아웃");
         JLabel wishList = new JLabel("찜 목록");
         
         id.setOpaque(true);
         id.setBackground(Color.decode("#D9D9D9"));
+        
+        logOut.setOpaque(true);
+        logOut.setBackground(Color.decode("#D9D9D9"));
+        logOut.setHorizontalAlignment(JLabel.CENTER);
        
         
         ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
@@ -439,5 +456,33 @@ class WishListPanel extends JPanel {
                 mainUI.showStartPanel(); // StartPanel로 전환 
             }
         });
+        
+        logOut.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // 마우스가 버튼 위에 올라갈 때의 동작
+                logOut.setBackground(Color.decode("#EDEDED")); // 원하는 연한 색상으로 변경
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // 마우스가 버튼에서 벗어날 때의 동작
+                logOut.setBackground(Color.decode("#D9D9D9")); // 버튼의 기본 배경색으로 변경
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // 마우스 클릭 시의 동작
+                // 여기에 로그아웃 처리를 수행하는 코드를 추가
+                // 예를 들어, 로그아웃 시 필요한 작업을 수행하고 로그인 화면으로 전환하는 코드를 작성
+                mainUI.showLogInPanel();
+            }
+        });
+
+    }
+    
+    public void setLoggedInUserID(String loggedInUserID) {
+        id.setText(loggedInUserID); //loggedInUserID 값을 JLabel에 설정
+        id.setHorizontalAlignment(JLabel.CENTER);
     }
 }
