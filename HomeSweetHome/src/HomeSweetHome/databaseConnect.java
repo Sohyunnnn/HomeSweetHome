@@ -13,7 +13,7 @@ public class databaseConnect {
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/homesweethome";
     private static final String USER = "root";
-    private static final String PW = "wkrdn6808!";
+    private static final String PW = "";
 
     public static Connection connect() throws Exception {
     	try {
@@ -27,6 +27,20 @@ public class databaseConnect {
         }
         
     }
+    
+    private Connection getConnection() throws SQLException {
+        // MySQL 서버의 JDBC URL, 사용자 이름 및 암호
+        String url = "jdbc:mysql://localhost:3306/homesweethome";
+        String user = "root";
+        String password = "";
+
+        // 연결을 설정합니다.
+        Connection connection = DriverManager.getConnection(url, user, password);
+
+        return connection;
+    }
+    
+    
 
     public static void close(Connection conn, Statement stmt) {
         try {
@@ -83,4 +97,116 @@ public class databaseConnect {
             //close(null, preparedStatement, resultSet);
         }
     }
+
+    
+    
+    public static boolean storeUserInDatabase(String username, String password) throws Exception {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = connect();
+
+            String query = "INSERT INTO user (user_ID, user_password) VALUES (?, ?)";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            return rowsAffected > 0;
+        } finally {
+            close(conn, preparedStatement, null);
+        }
+    }
+
+    public static boolean isUserExists(String username) throws Exception {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conn = connect();
+
+            String query = "SELECT * FROM user WHERE user_ID = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+
+            resultSet = preparedStatement.executeQuery();
+
+            // 결과가 존재하면 사용자가 이미 존재함
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 예외 처리 (로그 또는 다른 처리 방법을 선택할 수 있음)
+            return false;
+        } finally {
+            close(conn, preparedStatement, resultSet);
+        }
+    }
+    
+    public static String checkPassword(String username, String password) throws Exception {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conn = connect();
+
+            String query = "SELECT user_ID FROM user WHERE user_ID = ? AND user_password = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            resultSet = preparedStatement.executeQuery();
+
+            // 결과가 존재하면 사용자가 존재하고 비밀번호도 일치함
+            if (resultSet.next()) {
+                return resultSet.getString("user_ID");
+            } else {
+                return null; // 로그인 실패
+            }
+        } finally {
+            close(conn, preparedStatement, resultSet);
+        }
+    }
+
+
+    //위시리스트에 관한 데이터베이스
+    
+    public void addToWishlist(String userID, int productID) throws Exception {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = getConnection();
+            String query = "INSERT INTO wishlist (wishlist_user_ID, wishlist_product_ID) VALUES (?, ?)";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+            preparedStatement.setInt(2, productID);
+            preparedStatement.executeUpdate();
+        } finally {
+            close(connection, preparedStatement, null);
+        }
+    }
+
+    public void removeFromWishlist(String userID, int productID) throws Exception {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = getConnection();
+            String query = "DELETE FROM wishlist WHERE wishlist_user_ID = ? AND wishlist_product_ID = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+            preparedStatement.setInt(2, productID);
+            preparedStatement.executeUpdate();
+        } finally {
+            close(connection, preparedStatement, null);
+        }
+    }
+
+
+  
+  
 }

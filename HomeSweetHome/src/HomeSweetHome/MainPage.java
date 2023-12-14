@@ -42,6 +42,13 @@ public class MainPage extends JPanel {
     private JScrollPane scrollPane;
     private JPanel productPanelContainer;
     
+    private int productID;
+    private String userID;
+    private String loggedInUserID;
+
+    
+    
+    
 //    ImageIcon whiteHeartImg = new ImageIcon("images/whiteHeart.png");
 //    Image wImg = whiteHeartImg.getImage();
 //    Image whiteHeart = wImg.getScaledInstance(22, 22, Image.SCALE_SMOOTH);
@@ -50,11 +57,24 @@ public class MainPage extends JPanel {
 //    
 //    ImageIcon redHeartImg = new ImageIcon("images/redHeart.png");
 
+    public void setLoggedInUserID(String userID) {
+        this.userID = userID;
+        this.loggedInUserID = userID;
+        System.out.println("user ID: " + userID);
+        System.out.println("loggedInUserID: " + loggedInUserID);
+    }
     
     public MainPage(MainUI mainUI) {
         setLayout(null);
 
         databaseConnect = new databaseConnect();
+        
+        
+        this.userID = loggedInUserID;
+
+        System.out.println("user ID: " + userID);
+        System.out.println("loggedInUserID: " + loggedInUserID);
+        
         
         vintageB.setBounds(103, 84, 93, 24);
         modernB.setBounds(277, 84, 93, 24);
@@ -149,7 +169,14 @@ public class MainPage extends JPanel {
         profileB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainUI.showWishListPanel();
+            	
+            	// profileB 버튼을 누를 때 loggedInUserID 값을 가져와서
+                String loggedInUserID = mainUI.getLoggedInUserID();
+
+                // WishListPanel에 해당 값을 전달
+                mainUI.getWishListPanel().setLoggedInUserID(loggedInUserID);
+            	
+                mainUI.showWishListPanel();//
             }
         });
 
@@ -175,10 +202,12 @@ public class MainPage extends JPanel {
     public JScrollPane getScrollPane() {	
     	return scrollPane;	}
     	
-    private ProductPanel createProductPanel(String product_name, String product_price, String product_img) {
+    private ProductPanel createProductPanel(String product_name, String product_price, String product_img, int product_ID) {
         ImageIcon productImage = new ImageIcon(product_img);
         
-        ProductPanel productPanel = new ProductPanel(product_name, String.valueOf(product_price), productImage);
+        ProductPanel productPanel = new ProductPanel(product_name, String.valueOf(product_price), productImage,product_ID, this.userID);
+        
+        
 
         // ProductLabel 내부의 컴포넌트 크기 및 배치 설정
         productPanel.setLayout(null);
@@ -220,6 +249,8 @@ public class MainPage extends JPanel {
         return productPanel;
     }
 
+    //검색 기능
+    
     class Mappingtf extends JTextField {
         private String mapword;
 
@@ -254,6 +285,10 @@ public class MainPage extends JPanel {
     	private JButton productWish;
         private static final ImageIcon whiteHeartIcon;
         private static final ImageIcon redHeartIcon;
+        
+        private int productID;  // 상품의 ID를 저장할 변수
+        private String userID;  // 사용자의 ID를 저장할 변수
+        
 
         static {
             ImageIcon whiteHeartImg = new ImageIcon("images/whiteHeart.png");
@@ -267,7 +302,10 @@ public class MainPage extends JPanel {
             redHeartIcon = new ImageIcon(redHeart);
         }
         
-        public ProductPanel(String name, String price, Icon image) {
+        public ProductPanel(String name, String price, Icon image, int productID, String userID) {
+            this.productID = productID;
+            this.userID = userID;
+            
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // 세로로 나열되도록 설정
             productWish = new JButton(whiteHeartIcon);
             
@@ -301,13 +339,54 @@ public class MainPage extends JPanel {
             add(productWish);
         }
         
+        public int getProductID() {
+            return productID;
+        }
+
+        public String getUserID() {
+            return userID;
+        }
+        
         private void toggleHeartIcon() {
+        	
+        	int productID = getProductID();
+            String userID = getUserID();
+            System.out.println("토글/productID: "+productID);
+            System.out.println("토글/userID: "+userID);
+            
+            
             if (productWish.getIcon().equals(whiteHeartIcon)) {
                 productWish.setIcon(redHeartIcon);
+                addToWishlist();
             } else {
                 productWish.setIcon(whiteHeartIcon);
+                removeFromWishlist();
             }
         }
+
+        private void addToWishlist() {
+            try {
+                if (this.userID != null) {
+                    databaseConnect dbConnect = new databaseConnect();
+                    dbConnect.addToWishlist(userID, productID); // 여기서 확인
+                } else {
+                    System.err.println("userID가 null입니다.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void removeFromWishlist() {
+            databaseConnect dbConnect = new databaseConnect();
+            try {
+                dbConnect.removeFromWishlist(userID, productID);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        
     }
     
     
@@ -377,8 +456,9 @@ public class MainPage extends JPanel {
     	        	String product_name = resultSet.getString("product_name");
     	            String product_price = resultSet.getString("product_price");
     	            String product_img = resultSet.getString("product_img");
+    	            int product_ID= resultSet.getInt("product_ID");
 
-    	            ProductPanel productPanel = createProductPanel(product_name, product_price, product_img);
+    	            ProductPanel productPanel = createProductPanel(product_name, product_price, product_img,product_ID);
 
     	            int row = i / productsPerRow;
     	            int col = i % productsPerRow;

@@ -4,7 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.event.MouseEvent;
+import java.sql.SQLException;
+import java.awt.event.MouseAdapter; 
+import java.awt.event.MouseEvent; 
 
 
 public class MainUI extends JFrame {
@@ -33,6 +36,7 @@ public class MainUI extends JFrame {
         imagePanel = new ImagePanel(this);
         wishListPanel = new WishListPanel(this);
         mainPage = new MainPage(this);
+        
 
         cardPanel.add(startPanel, "start");
         cardPanel.add(signUpPanel, "signUp");
@@ -67,15 +71,26 @@ public class MainUI extends JFrame {
     
     public void showMainPage() {
     	int selectedStyleCode = imagePanel.getSelectedStyleCode();
+    	mainPage.setLoggedInUserID(logInPanel.getLoggedInUserID()); // loggedInUserID 값을 설정
     	mainPage.filterProductsByStyle(selectedStyleCode);
     	mainPage.getScrollPane().requestFocusInWindow();
     	
         cardLayout.show(cardPanel, "MainPage");
     }
+    
+    public String getLoggedInUserID() {
+        return logInPanel.getLoggedInUserID();
+    }
+
 
     public static void main(String[] args) {
         new MainUI();
     }
+    
+    public WishListPanel getWishListPanel() {
+        return wishListPanel;
+    }
+
 }
 
 class StartPanel extends JPanel {
@@ -183,34 +198,36 @@ class SignUpPanel extends JPanel {
 
 
 class LogInPanel extends JPanel {
+	private String loggedInUserID;
+	
+	
     public LogInPanel(MainUI mainUI) {
-    	setLayout(null);
+        setLayout(null);
 
         RoundedButton loginButton = new RoundedButton("로그인");
+
         HintTextField checkidInput = new HintTextField("로그인");
         HintPasswordField checkpasswordInput = new HintPasswordField("비밀번호");
-        
+
         Font customFont = new Font("굴림체", Font.PLAIN, 27);
         loginButton.setCustomFont(customFont);
         loginButton.setBackground(new Color(0x16, 0x3A, 0x9C)); // 배경색 설정
         loginButton.setForeground(new Color(255, 255, 255)); // 글자색 설정
-        
+
         ImageIcon logInShape = new ImageIcon("images/logInShape.png");
-        
+
         ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
-        
+
         JLabel logInShapeLabel = new JLabel(logInShape);
         logInShapeLabel.setBounds(530, 0, logInShape.getIconWidth(), logInShape.getIconHeight());
-        
+
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, smallLogo.getIconWidth(), smallLogo.getIconHeight());
-
-
 
         loginButton.setBounds(146, 419, 260, 59);
         checkidInput.setBounds(67, 129, 425, 59);
         checkpasswordInput.setBounds(67, 268, 425, 59);
-        
+
         add(checkidInput);
         add(checkpasswordInput);
         add(loginButton);
@@ -222,11 +239,53 @@ class LogInPanel extends JPanel {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String username = checkidInput.getText();
+                String password = new String(checkpasswordInput.getPassword());
+
+                try {
+                    String loggedInUserID = null;
+
+                    if (databaseConnect.isUserExists(username)) {
+                        // 사용자가 존재하는 경우
+                        loggedInUserID = databaseConnect.checkPassword(username, password);
+
+                        if (loggedInUserID != null) {
+                            // 비밀번호가 일치하는 경우
+                        	loggedInUserID=username;
+                        	//System.out.println(username+loggedInUserID);
+                        	setLoggedInUserID(loggedInUserID);
+                            JOptionPane.showMessageDialog(null, "로그인에 성공했습니다.", "로그인 성공", JOptionPane.PLAIN_MESSAGE);
+                            mainUI.showImagePanel(); // ImagePanel로 전환
+                        } else {
+                            // 비밀번호가 일치하지 않는 경우
+                            JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.", "로그인 실패", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        // 사용자가 존재하지 않는 경우
+                        JOptionPane.showMessageDialog(null, "사용자가 존재하지 않습니다.", "로그인 실패", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    // 예외 처리
+                    ex.printStackTrace(); // 또는 다른 예외 처리 로직을 추가할 수 있음
+                }
+
+
                 mainUI.showImagePanel(); // StartPanel로 전환 
             }
         });
     }
+    private void setLoggedInUserID(String userID) {
+    	System.out.println(userID);
+        this.loggedInUserID = userID;
+        System.out.println(userID+loggedInUserID);
+    }
+
+    public String getLoggedInUserID() {
+        return loggedInUserID;
+        
+    }
 }
+
 
 class ImagePanel extends JPanel { 
     private MainUI mainUI;
@@ -293,7 +352,7 @@ class ImagePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             	selectedStyleCode = index;
-                mainUI.showMainPage();
+            	mainUI.showMainPage();
             }
         });
     }
@@ -304,16 +363,25 @@ class ImagePanel extends JPanel {
 
 
 class WishListPanel extends JPanel {
+	
+	private JLabel id;
+	
     public WishListPanel(MainUI mainUI) {
         setLayout(null);
+        
+        //idLabel = new JLabel();
 
-        JLabel id = new JLabel("아이디");
+        id = new JLabel();
         RoundedButton SignUpConfirmation = new RoundedButton("확인");//나중에 삭제 할 코드
-        JButton logOut = new JButton("로그아웃");
+        JLabel logOut = new JLabel("로그아웃");
         JLabel wishList = new JLabel("찜 목록");
         
         id.setOpaque(true);
         id.setBackground(Color.decode("#D9D9D9"));
+        
+        logOut.setOpaque(true);
+        logOut.setBackground(Color.decode("#D9D9D9"));
+        logOut.setHorizontalAlignment(JLabel.CENTER);
        
         
         ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
@@ -353,5 +421,44 @@ class WishListPanel extends JPanel {
                 mainUI.showStartPanel(); // StartPanel로 전환 
             }
         });
+        
+        logOut.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // 마우스가 버튼 위에 올라갈 때의 동작
+                logOut.setBackground(Color.decode("#EDEDED")); // 원하는 연한 색상으로 변경
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // 마우스가 버튼에서 벗어날 때의 동작
+                logOut.setBackground(Color.decode("#D9D9D9")); // 버튼의 기본 배경색으로 변경
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // 마우스 클릭 시의 동작
+                int response = JOptionPane.showConfirmDialog(
+                        null,
+                        "프로그램을 종료하시겠습니까?",
+                        "종료 확인",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (response == JOptionPane.YES_OPTION) {
+                    // 예를 선택한 경우
+                    System.exit(0); // 프로그램 종료
+                } else {
+                    // 아니오를 선택한 경우
+                    mainUI.showLogInPanel(); // 로그인 화면으로 전환
+                }
+            }
+        });
+
+    }
+    
+    public void setLoggedInUserID(String loggedInUserID) {
+        id.setText(loggedInUserID); //loggedInUserID 값을 JLabel에 설정
+        id.setHorizontalAlignment(JLabel.CENTER);
     }
 }
