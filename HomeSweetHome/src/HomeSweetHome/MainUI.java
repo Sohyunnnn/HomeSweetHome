@@ -33,7 +33,8 @@ public class MainUI extends JFrame {
         logInPanel = new LogInPanel(this);
         imagePanel = new ImagePanel(this);
         wishListPanel = new WishListPanel(this);
-        mainPage = new MainPage(this,getLoggedInUserID());
+        mainPage = new MainPage(this);
+        
 
         cardPanel.add(startPanel, "start");
         cardPanel.add(signUpPanel, "signUp");
@@ -68,6 +69,7 @@ public class MainUI extends JFrame {
     
     public void showMainPage() {
     	int selectedStyleCode = imagePanel.getSelectedStyleCode();
+    	mainPage.setLoggedInUserID(logInPanel.getLoggedInUserID()); // loggedInUserID 값을 설정
     	mainPage.filterProductsByStyle(selectedStyleCode);
     	mainPage.getScrollPane().requestFocusInWindow();
     	
@@ -227,9 +229,6 @@ class SignUpPanel extends JPanel {
 class LogInPanel extends JPanel {
 	private String loggedInUserID;
 	
-	public void setLoggedInUserID(String userID) {
-        this.loggedInUserID = userID;
-    }
 	
     public LogInPanel(MainUI mainUI) {
         setLayout(null);
@@ -281,6 +280,9 @@ class LogInPanel extends JPanel {
 
                         if (loggedInUserID != null) {
                             // 비밀번호가 일치하는 경우
+                        	loggedInUserID=username;
+                        	//System.out.println(username+loggedInUserID);
+                        	setLoggedInUserID(loggedInUserID);
                             JOptionPane.showMessageDialog(null, "로그인에 성공했습니다.", "로그인 성공", JOptionPane.PLAIN_MESSAGE);
                             mainUI.showImagePanel(); // ImagePanel로 전환
                         } else {
@@ -299,8 +301,15 @@ class LogInPanel extends JPanel {
             }
         });
     }
+    private void setLoggedInUserID(String userID) {
+    	System.out.println(userID);
+        this.loggedInUserID = userID;
+        System.out.println(userID+loggedInUserID);
+    }
+
     public String getLoggedInUserID() {
         return loggedInUserID;
+        
     }
 }
 
