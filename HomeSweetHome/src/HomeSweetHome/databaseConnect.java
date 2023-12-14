@@ -13,8 +13,7 @@ public class databaseConnect {
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/homesweethome";
     private static final String USER = "root";
-    //private static final String PW = "";
-    private static final String PW = "mbmm77941*";
+    private static final String PW = "wkrdn6808!";
 
     public static Connection connect() throws Exception {
     	try {
@@ -84,57 +83,4 @@ public class databaseConnect {
             //close(null, preparedStatement, resultSet);
         }
     }
-    
-    
-    public static boolean storeUserInDatabase(String username, String password) throws Exception {
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            conn = connect();
-
-            String query = "INSERT INTO user (user_ID, user_password) VALUES (?, ?)";
-            preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            return rowsAffected > 0;
-        } finally {
-            close(conn, preparedStatement, null);
-        }
-    }
-
-    public static boolean isUserExists(String username) throws Exception {
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            conn = connect();
-
-            String query = "SELECT * FROM user WHERE user_ID = ?";
-            preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, username);
-
-            resultSet = preparedStatement.executeQuery();
-
-            // 결과가 존재하면 사용자가 이미 존재함
-            return resultSet.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // 예외 처리 (로그 또는 다른 처리 방법을 선택할 수 있음)
-            return false;
-        } finally {
-            close(conn, preparedStatement, resultSet);
-        }
-    }
-
-
-
-
-
-    
-    
 }
