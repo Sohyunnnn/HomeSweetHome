@@ -13,8 +13,7 @@ public class databaseConnect {
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/homesweethome";
     private static final String USER = "root";
-    //private static final String PW = "";
-    private static final String PW = "mbmm77941*";
+    private static final String PW = "";
 
     public static Connection connect() throws Exception {
     	try {
