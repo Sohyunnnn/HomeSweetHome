@@ -176,7 +176,7 @@ public class MainPage extends JPanel {
                 // WishListPanel에 해당 값을 전달
                 mainUI.getWishListPanel().setLoggedInUserID(loggedInUserID);
             	
-                mainUI.showWishListPanel();
+                mainUI.showWishListPanel();//
             }
         });
 

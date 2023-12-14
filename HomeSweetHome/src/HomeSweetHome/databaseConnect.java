@@ -14,7 +14,7 @@ public class databaseConnect {
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/homesweethome";
     private static final String USER = "root";
     //private static final String PW = "";
-    private static final String PW = "mbmm77941*";
+    private static final String PW = "";
 
     public static Connection connect() throws Exception {
     	try {
@@ -33,7 +33,7 @@ public class databaseConnect {
         // MySQL 서버의 JDBC URL, 사용자 이름 및 암호
         String url = "jdbc:mysql://localhost:3306/homesweethome";
         String user = "root";
-        String password = "mbmm77941*";
+        String password = "";
 
         // 연결을 설정합니다.
         Connection connection = DriverManager.getConnection(url, user, password);
