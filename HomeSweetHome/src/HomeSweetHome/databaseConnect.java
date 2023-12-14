@@ -130,28 +130,6 @@ public class databaseConnect {
             close(conn, preparedStatement, resultSet);
         }
     }
-    
-    public static boolean checkPassword(String username, String password) throws Exception {
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            conn = connect();
-
-            String query = "SELECT * FROM user WHERE user_ID = ? AND user_password = ?";
-            preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-
-            resultSet = preparedStatement.executeQuery();
-
-            // 결과가 존재하면 사용자가 존재하고 비밀번호도 일치함
-            return resultSet.next();
-        } finally {
-            close(conn, preparedStatement, resultSet);
-        }
-    }
 
 
 
