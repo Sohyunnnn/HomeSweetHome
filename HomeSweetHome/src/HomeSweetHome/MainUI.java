@@ -473,9 +473,20 @@ class WishListPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // 마우스 클릭 시의 동작
-                // 여기에 로그아웃 처리를 수행하는 코드를 추가
-                // 예를 들어, 로그아웃 시 필요한 작업을 수행하고 로그인 화면으로 전환하는 코드를 작성
-                mainUI.showLogInPanel();
+                int response = JOptionPane.showConfirmDialog(
+                        null,
+                        "프로그램을 종료하시겠습니까?",
+                        "종료 확인",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (response == JOptionPane.YES_OPTION) {
+                    // 예를 선택한 경우
+                    System.exit(0); // 프로그램 종료
+                } else {
+                    // 아니오를 선택한 경우
+                    mainUI.showLogInPanel(); // 로그인 화면으로 전환
+                }
             }
         });
 
