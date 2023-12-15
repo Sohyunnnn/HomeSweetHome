@@ -99,7 +99,7 @@ public class databaseConnect {
         }
     }
     
-    //로그인에 관한 데이터베이스
+    //로그인에 관한 코드
     public static boolean storeUserInDatabase(String username, String password) throws Exception {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -172,7 +172,7 @@ public class databaseConnect {
     }
 
 
-    //위시리스트에 관한 데이터베이스
+    //메인페이지 찜에 관한 코드
     
     public void addToWishlist(String userID, int productID) throws Exception {
         Connection connection = null;
@@ -223,7 +223,7 @@ public class databaseConnect {
         }
     }
 
-    //찜 목록에 관련한 코드
+    //아이디 동일성 판단 후 찜한 상품 판단
     public static ResultSet getWishlistProducts(String userID) throws Exception {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -247,7 +247,7 @@ public class databaseConnect {
         }
     }
     
- // 위시리스트에 해당 상품이 있는지 확인하는 메서드
+ // 위시리스트 테이블에 해당 상품이 있는지 확인하는 메서드
     public boolean checkIfInWishlist(String userID, int productID) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

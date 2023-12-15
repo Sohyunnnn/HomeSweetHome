@@ -48,15 +48,6 @@ public class MainPage extends JPanel {
 
     
     
-    
-//    ImageIcon whiteHeartImg = new ImageIcon("images/whiteHeart.png");
-//    Image wImg = whiteHeartImg.getImage();
-//    Image whiteHeart = wImg.getScaledInstance(22, 22, Image.SCALE_SMOOTH);
-//    ImageIcon whiteHeartIcon = new ImageIcon(whiteHeart);
-//    private JButton productWish = new JButton(whiteHeartIcon);
-//    
-//    ImageIcon redHeartImg = new ImageIcon("images/redHeart.png");
-
     public void setLoggedInUserID(String userID) {
         this.userID = userID;
         this.loggedInUserID = userID;
@@ -101,13 +92,6 @@ public class MainPage extends JPanel {
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, 262, 39);
 
-//        productWish.setBounds(141,122,22,22);
-//        productWish.setBorderPainted(false);
-//        productWish.setContentAreaFilled(false);
-//        productWish.setFocusPainted(false);
-//        productWish.setIcon(whiteHeartIcon);
-//        productWish.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//        productWish.setRolloverIcon(redHeartImg);
         
         strCombo.setBounds(843, 141, 70, 22);
 
@@ -231,22 +215,13 @@ public class MainPage extends JPanel {
         priceLabel.setBounds(15, 190, 170, 20);
         priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // 찜 버튼 추가
-//        productWish.setBounds(141,122,22,22);
-//        productWish.setBorderPainted(false);
-//        productWish.setContentAreaFilled(false);
-//        productWish.setFocusPainted(false);
-//        productWish.setIcon(whiteHeartIcon);
-//        profileB.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        // ProductLabel에 컴포넌트 추가
-        
 
-        //imageLabel.add(productWish);
+        
+        // ProductLabel에 컴포넌트 추가    
+
         productPanel.add(imageLabel);
         productPanel.add(nameLabel);
         productPanel.add(priceLabel);
-        //productPanel.add(productWish);
         
 
         return productPanel;
@@ -541,11 +516,10 @@ public class MainPage extends JPanel {
     
     private boolean checkIfInWishlist(String userID, int productID) {
         try {
-            // checkIfInWishlist가 databaseConnect 클래스의 메소드라고 가정합니다.
             return databaseConnect.checkIfInWishlist(userID, productID);
         } catch (Exception e) {
             e.printStackTrace();
-            return false; // 또는 예외를 처리하는 방식에 따라 다르게 처리하세요.
+            return false; 
         }
     }
     
