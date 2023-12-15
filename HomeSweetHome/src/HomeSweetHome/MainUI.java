@@ -404,10 +404,8 @@ class WishListPanel extends JPanel {
     public WishListPanel(MainUI mainUI) {
         setLayout(null);
         
-        //idLabel = new JLabel();
 
         id = new JLabel();
-        RoundedButton SignUpConfirmation = new RoundedButton("확인");//나중에 삭제 할 코드
         JLabel logOut = new JLabel("로그아웃");
         JLabel wishList = new JLabel("찜 목록");
         
@@ -431,7 +429,6 @@ class WishListPanel extends JPanel {
 
 
         id.setBounds(63, 364, 200, 47);
-        SignUpConfirmation.setBounds(586, 476, 209, 59);//나중에 삭제 할 코드
         wishList.setBounds(342, 49, 200, 47);
         logOut.setBounds(63,455,200,47);
         
@@ -442,7 +439,6 @@ class WishListPanel extends JPanel {
 
 
         add(id);
-        add(SignUpConfirmation);//나중에 삭제 할 코드
         add(smallLogoLabel);
         add(profileLabel);
         add(wishList);
@@ -450,24 +446,18 @@ class WishListPanel extends JPanel {
 
         setBackground(Color.WHITE);
 
-        SignUpConfirmation.addActionListener(new ActionListener() {//나중에 삭제 할 코드
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainUI.showStartPanel(); // StartPanel로 전환 
-            }
-        });
         
         logOut.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                // 마우스가 버튼 위에 올라갈 때의 동작
-                logOut.setBackground(Color.decode("#EDEDED")); // 원하는 연한 색상으로 변경
+                // 마우스가 버튼 위에 올라갈 때
+                logOut.setBackground(Color.decode("#EDEDED"));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                // 마우스가 버튼에서 벗어날 때의 동작
-                logOut.setBackground(Color.decode("#D9D9D9")); // 버튼의 기본 배경색으로 변경
+                // 마우스가 버튼에서 벗어날 때
+                logOut.setBackground(Color.decode("#D9D9D9")); 
             }
 
             @Override
@@ -481,10 +471,8 @@ class WishListPanel extends JPanel {
                 );
 
                 if (response == JOptionPane.YES_OPTION) {
-                    // 예를 선택한 경우
                     System.exit(0); // 프로그램 종료
                 } else {
-                    // 아니오를 선택한 경우
                     mainUI.showLogInPanel(); // 로그인 화면으로 전환
                 }
             }
