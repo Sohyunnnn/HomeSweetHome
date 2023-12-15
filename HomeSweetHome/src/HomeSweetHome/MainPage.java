@@ -48,15 +48,6 @@ public class MainPage extends JPanel {
 
     
     
-    
-//    ImageIcon whiteHeartImg = new ImageIcon("images/whiteHeart.png");
-//    Image wImg = whiteHeartImg.getImage();
-//    Image whiteHeart = wImg.getScaledInstance(22, 22, Image.SCALE_SMOOTH);
-//    ImageIcon whiteHeartIcon = new ImageIcon(whiteHeart);
-//    private JButton productWish = new JButton(whiteHeartIcon);
-//    
-//    ImageIcon redHeartImg = new ImageIcon("images/redHeart.png");
-
     public void setLoggedInUserID(String userID) {
         this.userID = userID;
         this.loggedInUserID = userID;
@@ -101,13 +92,6 @@ public class MainPage extends JPanel {
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, 262, 39);
 
-//        productWish.setBounds(141,122,22,22);
-//        productWish.setBorderPainted(false);
-//        productWish.setContentAreaFilled(false);
-//        productWish.setFocusPainted(false);
-//        productWish.setIcon(whiteHeartIcon);
-//        productWish.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//        productWish.setRolloverIcon(redHeartImg);
         
         strCombo.setBounds(843, 141, 70, 22);
 
@@ -197,6 +181,9 @@ public class MainPage extends JPanel {
         });
         
         
+     // 메인페이지가 생성될 때 현재 로그인한 유저의 위시리스트를 조회하여 하트 색상 업데이트
+        updateHeartIcons();
+        
     }
 
     public JScrollPane getScrollPane() {	
@@ -228,22 +215,13 @@ public class MainPage extends JPanel {
         priceLabel.setBounds(15, 190, 170, 20);
         priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // 찜 버튼 추가
-//        productWish.setBounds(141,122,22,22);
-//        productWish.setBorderPainted(false);
-//        productWish.setContentAreaFilled(false);
-//        productWish.setFocusPainted(false);
-//        productWish.setIcon(whiteHeartIcon);
-//        profileB.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        // ProductLabel에 컴포넌트 추가
-        
 
-        //imageLabel.add(productWish);
+        
+        // ProductLabel에 컴포넌트 추가    
+
         productPanel.add(imageLabel);
         productPanel.add(nameLabel);
         productPanel.add(priceLabel);
-        //productPanel.add(productWish);
         
 
         return productPanel;
@@ -387,6 +365,15 @@ public class MainPage extends JPanel {
         }
         
         
+        public void setWishlistStatus(boolean isInWishlist) {
+            if (isInWishlist) {
+                productWish.setIcon(redHeartIcon);
+            } else {
+                productWish.setIcon(whiteHeartIcon);
+            }
+        }
+        
+        
     }
     
     
@@ -458,8 +445,13 @@ public class MainPage extends JPanel {
     	            String product_img = resultSet.getString("product_img");
     	            int product_ID= resultSet.getInt("product_ID");
 
-    	            ProductPanel productPanel = createProductPanel(product_name, product_price, product_img,product_ID);
-
+    	            ProductPanel productPanel = createProductPanel(product_name, product_price, product_img, product_ID);
+    	            
+    	            
+    	         // 위시리스트에 해당 상품이 있는지 확인하고, 상태를 ProductPanel에 전달
+    	            boolean isInWishlist = checkIfInWishlist(userID, product_ID);
+    	            productPanel.setWishlistStatus(isInWishlist);
+    	            
     	            int row = i / productsPerRow;
     	            int col = i % productsPerRow;
 
@@ -487,6 +479,49 @@ public class MainPage extends JPanel {
     		}
 
     	}
+    
+ // 위시리스트에 있는 상품들의 하트 색상을 업데이트하는 메서드
+    private void updateHeartIcons() {
+        ResultSet wishlistProductsResultSet = null;
+
+        try {
+            // 현재 로그인한 유저의 위시리스트에 있는 상품들 조회
+            wishlistProductsResultSet = databaseConnect.getWishlistProducts(loggedInUserID);
+
+            if (wishlistProductsResultSet != null) {
+                while (wishlistProductsResultSet.next()) {
+                    int productID = wishlistProductsResultSet.getInt("product_ID");
+
+                    // 각 상품에 대한 하트 컴포넌트를 찾아서 Wishlist 상태를 업데이트
+                    updateHeartColor(productID, true);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            databaseConnect.close(null, null, wishlistProductsResultSet);
+        }
+    }
+
+    // 특정 상품의 하트 색상을 붉은 색으로 업데이트하는 메서드
+    private void updateHeartColor(int productID, boolean isInWishlist) {
+        for (ProductPanel productPanel : productComponents) {
+            if (productPanel.getProductID() == productID) {
+                productPanel.setWishlistStatus(isInWishlist);
+                break; // 해당 상품을 찾았으면 반복문 종료
+            }
+        }
+    }
+
+    
+    private boolean checkIfInWishlist(String userID, int productID) {
+        try {
+            return databaseConnect.checkIfInWishlist(userID, productID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; 
+        }
+    }
     
     
 }
