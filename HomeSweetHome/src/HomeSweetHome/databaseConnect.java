@@ -99,7 +99,7 @@ public class databaseConnect {
         }
     }
     
-    
+    //로그인에 관한 데이터베이스
     public static boolean storeUserInDatabase(String username, String password) throws Exception {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -177,18 +177,35 @@ public class databaseConnect {
     public void addToWishlist(String userID, int productID) throws Exception {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
         try {
             connection = getConnection();
-            String query = "INSERT INTO wishlist (wishlist_user_ID, wishlist_product_ID) VALUES (?, ?)";
-            preparedStatement = connection.prepareStatement(query);
+
+            // 이미 위시리스트에 해당 상품이 있는지 확인
+            String checkQuery = "SELECT * FROM wishlist WHERE wishlist_user_ID = ? AND wishlist_product_ID = ?";
+            preparedStatement = connection.prepareStatement(checkQuery);
+            preparedStatement.setString(1, userID);
+            preparedStatement.setInt(2, productID);
+            resultSet = preparedStatement.executeQuery();
+
+            // 이미 위시리스트에 있는 경우 추가하지 않고 종료
+            if (resultSet.next()) {
+                System.out.println("이미 위시리스트에 있는 상품입니다.");
+                return;
+            }
+
+            // 위시리스트에 추가
+            String insertQuery = "INSERT INTO wishlist (wishlist_user_ID, wishlist_product_ID) VALUES (?, ?)";
+            preparedStatement = connection.prepareStatement(insertQuery);
             preparedStatement.setString(1, userID);
             preparedStatement.setInt(2, productID);
             preparedStatement.executeUpdate();
         } finally {
-            close(connection, preparedStatement, null);
+            close(connection, preparedStatement, resultSet);
         }
     }
+
 
     public void removeFromWishlist(String userID, int productID) throws Exception {
         Connection connection = null;
@@ -206,6 +223,53 @@ public class databaseConnect {
         }
     }
 
+    //찜 목록에 관련한 코드
+    public static ResultSet getWishlistProducts(String userID) throws Exception {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conn = connect();
+
+            String query = "SELECT product.* FROM product INNER JOIN wishlist ON product.product_ID = wishlist.wishlist_product_ID WHERE wishlist.wishlist_user_ID = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+
+            resultSet = preparedStatement.executeQuery();
+
+            return resultSet;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            //close(null, preparedStatement, resultSet);
+        }
+    }
+    
+ // 위시리스트에 해당 상품이 있는지 확인하는 메서드
+    public boolean checkIfInWishlist(String userID, int productID) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = getConnection();
+
+            String query = "SELECT * FROM wishlist WHERE wishlist_user_ID = ? AND wishlist_product_ID = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+            preparedStatement.setInt(2, productID);
+            resultSet = preparedStatement.executeQuery();
+
+            return resultSet.next(); // 결과가 있으면 true, 없으면 false 반환
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            close(connection, preparedStatement, resultSet);
+        }
+    }
 
 
 
