@@ -5,10 +5,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.sql.SQLException;
 import java.awt.event.MouseAdapter; 
-import java.awt.event.MouseEvent; 
-//
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.*;
+import java.sql.ResultSet;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import HomeSweetHome.MainPage.ProductPanel;
+import HomeSweetHome.databaseConnect;
 
 
 public class MainUI extends JFrame {
@@ -21,6 +27,9 @@ public class MainUI extends JFrame {
     private ImagePanel imagePanel;
     private WishListPanel wishListPanel;
     private MainPage mainPage;
+    
+    private databaseConnect databaseConnect;
+    
     
 
     public MainUI() {
@@ -35,8 +44,11 @@ public class MainUI extends JFrame {
         signUpPanel = new SignUpPanel(this);
         logInPanel = new LogInPanel(this);
         imagePanel = new ImagePanel(this);
+        //wishListPanel = new WishListPanel(this, databaseConnect);
         wishListPanel = new WishListPanel(this);
         mainPage = new MainPage(this);
+        
+        //databaseConnect = new databaseConnect();
         
 
         cardPanel.add(startPanel, "start");
@@ -48,6 +60,15 @@ public class MainUI extends JFrame {
 
         add(cardPanel);
         setVisible(true);
+        
+        
+        try {
+            databaseConnect = new databaseConnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        
     }
 
     public void showSignUpPanel() {
@@ -88,9 +109,45 @@ public class MainUI extends JFrame {
         new MainUI();
     }
     
+//    public static void main(String[] args) {
+//        MainUI mainUI = new MainUI();
+//
+//        // 프로그램이 종료될 때 데이터베이스 연결 닫기
+//        mainUI.addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//                try {
+//                    databaseConnect dbConnect = mainUI.getDatabaseConnect();
+//                    if (dbConnect != null) {
+//                        // 여기서 사용 중인 Connection 객체의 참조를 가져와 전달
+//                        Connection connection = dbConnect.connect(); // 예시일 뿐, 실제로는 여러분이 사용하는 메서드를 호출해야 함
+//                        Statement statement = null;
+//
+//                        // 전달된 객체를 사용하여 close 메서드 호출
+//                        dbConnect.close(connection, statement);
+//
+//                        System.out.println("Database connection closed.");
+//                    }
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        });
+//    }
+
+
+
+    
     public WishListPanel getWishListPanel() {
         return wishListPanel;
     }
+    
+    
+    public databaseConnect getDatabaseConnect() {
+        return databaseConnect;
+    }
+
+    
 
 }
 
@@ -149,20 +206,29 @@ class SignUpPanel extends JPanel {
     public SignUpPanel(MainUI mainUI) {
         setLayout(null);
 
-        JLabel welcomeMent = new JLabel("<html><body><center>환영합니다.<br> <br>회원가입을 위한 아이디와 비밀번호를 입력해주세요.</center></body></html>");
-        HintTextField idInput = new HintTextField("로그인");
+        JLabel welcomeMent = new JLabel("<html><body>환영합니다.<br><br>인테리어 추천 서비스<br>Home Sweet Home입니다.<br><br>회원가입을 위한<br>아이디와 비밀번호를 입력해주세요.</body></html>");
+        HintTextField idInput = new HintTextField("아이디");
         HintPasswordField passwordInput = new HintPasswordField("비밀번호");
         HintPasswordField passCheckInput = new HintPasswordField("비밀번호 확인");
         RoundedButton SignUpConfirmation = new RoundedButton("확인");
+        
         
         Font customFont = new Font("굴림체", Font.PLAIN, 27);
         SignUpConfirmation.setCustomFont(customFont);
         SignUpConfirmation.setBackground(new Color(0x16, 0x3A, 0x9C)); // 배경색 설정
         SignUpConfirmation.setForeground(new Color(255, 255, 255)); // 글자색 설정
         
+        Font welcomeMentFont = new Font("Inter", Font.BOLD, 25);
+        
+        welcomeMent.setFont(welcomeMentFont);
+        welcomeMent.setForeground(Color.WHITE);
+
+        
+        
         ImageIcon SignUpShape = new ImageIcon("images/SignUpShape.png");
         
         ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
+        
         
         JLabel signUpShapeLabel = new JLabel(SignUpShape);
         signUpShapeLabel.setBounds(0, 0, SignUpShape.getIconWidth(), SignUpShape.getIconHeight());
@@ -171,7 +237,7 @@ class SignUpPanel extends JPanel {
         smallLogoLabel.setBounds(16, 16, 262, 39);
 
 
-        welcomeMent.setBounds(36, 260, 287, 153);
+        welcomeMent.setBounds(22, 144, 420, 300);
         idInput.setBounds(487, 107, 425, 59);
         passwordInput.setBounds(487, 223, 425, 59);
         passCheckInput.setBounds(487, 331, 425, 59);
@@ -183,8 +249,26 @@ class SignUpPanel extends JPanel {
         add(passCheckInput);
         add(SignUpConfirmation);
         add(smallLogoLabel);
-        add(signUpShapeLabel);
+        
+        
+        
+        ImageIcon backButtonImg= new ImageIcon("images/backButton.png");
+        JLabel backButton = new JLabel(backButtonImg);
+        backButton.setBounds(20, 66, 32, 32);
+        add(backButton);
+        
+        backButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	mainUI.showStartPanel();
+            }
+        });
 
+        
+        
+        add(signUpShapeLabel);
+        
+        
         setBackground(Color.WHITE);
 
         SignUpConfirmation.addActionListener(new ActionListener() {
@@ -226,6 +310,7 @@ class SignUpPanel extends JPanel {
                 }
             }
         });
+        
 
 
 
@@ -269,6 +354,19 @@ class LogInPanel extends JPanel {
         add(checkpasswordInput);
         add(loginButton);
         add(smallLogoLabel);
+        
+        ImageIcon backButtonImg= new ImageIcon("images/backButton.png");
+        JLabel backButton = new JLabel(backButtonImg);
+        backButton.setBounds(20, 66, 32, 32);
+        add(backButton);
+        
+        backButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	mainUI.showStartPanel();
+            }
+        });
+        
         add(logInShapeLabel);
 
         setBackground(Color.WHITE);
@@ -289,7 +387,6 @@ class LogInPanel extends JPanel {
                         if (loggedInUserID != null) {
                             // 비밀번호가 일치하는 경우
                         	loggedInUserID=username;
-                        	//System.out.println(username+loggedInUserID);
                         	setLoggedInUserID(loggedInUserID);
                             JOptionPane.showMessageDialog(null, "로그인에 성공했습니다.", "로그인 성공", JOptionPane.PLAIN_MESSAGE);
                             mainUI.showImagePanel(); // ImagePanel로 전환
@@ -310,9 +407,7 @@ class LogInPanel extends JPanel {
         });
     }
     private void setLoggedInUserID(String userID) {
-    	System.out.println(userID);
         this.loggedInUserID = userID;
-        System.out.println(userID+loggedInUserID);
     }
 
     public String getLoggedInUserID() {
@@ -333,6 +428,19 @@ class ImagePanel extends JPanel {
         JLabel largerLogoLabel = new JLabel();
         setLabelProperties(largerLogoLabel, 6);
         add(largerLogoLabel);
+        
+        ImageIcon backButtonImg= new ImageIcon("images/backButton.png");
+        JLabel backButton = new JLabel(backButtonImg);
+        backButton.setBounds(5, 3, 32, 32);
+        add(backButton);
+        
+        backButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	mainUI.showLogInPanel();
+            }
+        });
+        
 
         JButton[] imageButtons = new JButton[5];
 
@@ -400,14 +508,26 @@ class ImagePanel extends JPanel {
 class WishListPanel extends JPanel {
 	
 	private JLabel id;
+	private String loggedInUserID;
+	private databaseConnect databaseConnect;
+	private boolean isInWishlist;
+	private JScrollPane scrollPane;
 	
-    public WishListPanel(MainUI mainUI) {
-        setLayout(null);
+	private JPanel WishPanelContainer;
+	
+	
+	//public WishListPanel(MainUI mainUI, databaseConnect databaseConnect) {
+	public WishListPanel(MainUI mainUI) {
+		
+	    setLayout(null);
+	    databaseConnect = new databaseConnect();
+        
+	    initWishListPanel();
         
 
         id = new JLabel();
         JLabel logOut = new JLabel("로그아웃");
-        JLabel wishList = new JLabel("찜 목록");
+        
         
         id.setOpaque(true);
         id.setBackground(Color.decode("#D9D9D9"));
@@ -415,6 +535,9 @@ class WishListPanel extends JPanel {
         logOut.setOpaque(true);
         logOut.setBackground(Color.decode("#D9D9D9"));
         logOut.setHorizontalAlignment(JLabel.CENTER);
+        
+        
+        
        
         
         ImageIcon smallLogo = new ImageIcon("images/smallLogo.png");
@@ -429,11 +552,11 @@ class WishListPanel extends JPanel {
 
 
         id.setBounds(63, 364, 200, 47);
-        wishList.setBounds(342, 49, 200, 47);
+        
         logOut.setBounds(63,455,200,47);
         
         id.setFont(new Font("굴림체", Font.PLAIN, 18)); 
-        wishList.setFont(new Font("굴림체", Font.PLAIN, 35));
+        
         
         logOut.setBackground(Color.decode("#D9D9D9"));
 
@@ -441,10 +564,43 @@ class WishListPanel extends JPanel {
         add(id);
         add(smallLogoLabel);
         add(profileLabel);
-        add(wishList);
+        
         add(logOut);
 
         setBackground(Color.WHITE);
+        
+        ImageIcon backButtonImg= new ImageIcon("images/backButton.png");
+        JLabel backButton = new JLabel(backButtonImg);
+        backButton.setBounds(20, 66, 32, 32);
+        add(backButton);
+        
+        backButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	mainUI.showMainPage();
+            }
+        });
+        
+        // 찜목록 스크롤 패널 관련 코드
+        WishPanelContainer = new JPanel();
+        WishPanelContainer.setLayout(null);
+        WishPanelContainer.setPreferredSize(new Dimension(312, 2000));
+        WishPanelContainer.setBackground(Color.WHITE);
+        
+        scrollPane = new JScrollPane(WishPanelContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBounds(312, -1, 660, 627);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setBackground(Color.white);
+        add(scrollPane);
+        
+        JLabel wishList = new JLabel("찜 목록");
+        wishList.setBounds(28, 49, 200, 47);
+        wishList.setFont(new Font("굴림체", Font.PLAIN, 35));
+        add(wishList);
+        
+        WishPanelContainer.add(wishList);
+        
+        scrollPane.setViewportView(WishPanelContainer);
 
         
         logOut.addMouseListener(new MouseAdapter() {
@@ -477,11 +633,132 @@ class WishListPanel extends JPanel {
                 }
             }
         });
+        }
+        
+		
+	void initWishListPanel() {
+	    if (databaseConnect == null) {
+	        databaseConnect = new databaseConnect(); // 이 부분을 추가하여 초기화
+	        // 또는 다른 방법으로 databaseConnect를 초기화해주세요.
+	    }
 
+	    ResultSet wishlistProductsResultSet = null;
+	    ResultSet productInfoResultSet = null;
+
+	    try {
+	        wishlistProductsResultSet = databaseConnect.getWishlistProductInfo(loggedInUserID);
+
+	        if (wishlistProductsResultSet == null) {
+	            System.out.println("ResultSet is null.");
+	            return;
+	        }
+	        if (wishlistProductsResultSet.isClosed()) {
+	            System.out.println("ResultSet is closed.");
+	            return;
+	        }
+
+	        List<Integer> wishlistProductIds = new ArrayList<>();
+
+	        if (wishlistProductsResultSet != null) {
+	            while (wishlistProductsResultSet.next()) {
+	                int wishlistProductID = wishlistProductsResultSet.getInt("wishlist_product_ID");
+	                wishlistProductIds.add(wishlistProductID);
+	            }
+	        }
+
+	        for (Integer wishlistProductId : wishlistProductIds) {
+	            System.out.println("wishlistProductId에 대한 루프 진입: " + wishlistProductId);
+
+	            productInfoResultSet = databaseConnect.getProductInfo(wishlistProductId);
+
+	            while (productInfoResultSet.next()) {
+	                String product_name = productInfoResultSet.getString("product_name");
+	                String product_price = productInfoResultSet.getString("product_price");
+	                String product_img = productInfoResultSet.getString("product_img");
+
+	                ProductPanel productPanel = createProductPanel(product_name, product_price, product_img, wishlistProductId);
+	                productPanel.setWishlistStatus(true);
+
+	                System.out.println(product_price);
+
+	                WishPanelContainer.add(productPanel);
+	            }
+
+	            // productInfoResultSet 사용 후 닫기
+	            if (productInfoResultSet != null) {
+	                productInfoResultSet.close();
+	                System.out.println("productInfoResultSet closed.");
+	            }
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        System.out.println("initWishListPanel에서 예외 발생: " + e.getMessage());
+	    } finally {
+	        try {
+	            // ResultSet 사용 후 반드시 닫기
+	            if (wishlistProductsResultSet != null) {
+	                wishlistProductsResultSet.close();
+	                System.out.println("wishlistProductsResultSet closed.");
+	            }
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	}
+
+
+		 
+
+
+        
+        
+    public void setLoggedInUserID(String loggedInUserID) {
+    	this.loggedInUserID = loggedInUserID;
+        id.setText(loggedInUserID);
+        id.setHorizontalAlignment(JLabel.CENTER);
+        System.out.println("setLoggedInUserID: "+loggedInUserID);
+        initWishListPanel();
     }
     
-    public void setLoggedInUserID(String loggedInUserID) {
-        id.setText(loggedInUserID); //loggedInUserID 값을 JLabel에 설정
-        id.setHorizontalAlignment(JLabel.CENTER);
+    public ProductPanel createProductPanel(String product_name, String product_price, String product_img, int product_ID) {
+        ImageIcon productImage = new ImageIcon(product_img);
+        
+        ProductPanel productPanel = new ProductPanel(product_name, String.valueOf(product_price), productImage,product_ID, this.loggedInUserID);
+        
+        
+
+        // ProductLabel 내부의 컴포넌트 크기 및 배치 설정
+        productPanel.setLayout(null);
+        //productPanel.setBounds(200, 220, 45, 239);
+        productPanel.setBackground(new Color(139, 158, 211));
+
+        // 이미지 크기 및 위치
+        JLabel imageLabel = new JLabel(productImage);
+        imageLabel.setBounds(15, 15, 170, 150);
+
+        // 상품 이름 라벨
+        JLabel nameLabel = new JLabel(product_name);
+        nameLabel.setBounds(15, 170, 170, 20);
+        nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // 상품 가격 라벨
+        JLabel priceLabel = new JLabel(String.valueOf(product_price));
+        priceLabel.setBounds(15, 190, 170, 20);
+        priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+
+        
+        // ProductLabel에 컴포넌트 추가    
+
+        productPanel.add(imageLabel);
+        productPanel.add(nameLabel);
+        productPanel.add(priceLabel);
+        
+
+        return productPanel;
     }
+    
+    
+    
 }
