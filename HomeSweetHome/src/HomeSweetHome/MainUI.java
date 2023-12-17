@@ -617,8 +617,7 @@ class WishListPanel extends JPanel {
 
 	    try {
 	    	
-	    	
-
+	    	WishPanelContainer.removeAll();
 	        
 	        
 	        List<WishlistItem> wishlistItems = databaseConnect.getWishListCompo(loggedInUserID);
