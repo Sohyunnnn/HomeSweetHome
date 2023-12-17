@@ -130,6 +130,13 @@ public class MainPage extends JPanel {
             }
         });
         
+        smallLogoLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	mainUI.showWishListPanel();
+            }
+        });
+        
 
         setBackground(Color.WHITE);
         productComponents = new ArrayList<>();

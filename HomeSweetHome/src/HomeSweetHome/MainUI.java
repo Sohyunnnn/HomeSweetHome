@@ -83,7 +83,8 @@ public class MainUI extends JFrame {
     }
     
     public void showWishListPanel() {
-        cardLayout.show(cardPanel, "WishList");
+        wishListPanel.setLoggedInUserID(logInPanel.getLoggedInUserID()); // 혹시라도 로그인 상태가 변경됐다면 다시 설정
+        cardLayout.show(cardPanel, "WishList"); // WishListPanel로 전환
     }
     
     public void showMainPage() {
@@ -490,8 +491,6 @@ class WishListPanel extends JPanel {
 	    setLayout(null);
 	    databaseConnect = new databaseConnect();
         
-	    initWishListPanel();
-        
 
         id = new JLabel();
         JLabel logOut = new JLabel("로그아웃");
@@ -546,6 +545,13 @@ class WishListPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
             	mainUI.showMainPage();
+            }
+        });
+        
+        smallLogoLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	mainUI.showWishListPanel();
             }
         });
         
@@ -610,6 +616,11 @@ class WishListPanel extends JPanel {
 	    }
 
 	    try {
+	    	
+	    	
+
+	        
+	        
 	        List<WishlistItem> wishlistItems = databaseConnect.getWishListCompo(loggedInUserID);
 
 	        int x = 8;  // 초기 x 좌표
@@ -620,8 +631,8 @@ class WishListPanel extends JPanel {
 	            String productName = wishlistItem.getProductName();
 	            int productPrice = wishlistItem.getProductPrice();
 	            int productID = wishlistItem.getProductID();
+	            System.out.println(productID);
 
-	            System.out.println(productPrice);
 
 	            // ProductPanel을 생성하고 WishListPanel에 추가
 	            ProductPanel productPanel = createProductPanel(productName, String.valueOf(productPrice), productImg, productID);
@@ -639,7 +650,11 @@ class WishListPanel extends JPanel {
 	                x = 8;
 	                y += 235; // y 좌표 이동
 	            }
+	            
 	        }
+	        revalidate();
+	        repaint();
+	        
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        System.out.println("initWishListPanel에서 예외 발생: " + e.getMessage());
