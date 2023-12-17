@@ -204,7 +204,8 @@ public class MainPage extends JPanel {
     }
 
     public JScrollPane getScrollPane() {	
-    	return scrollPane;	}
+    	return scrollPane;	
+    	}
     	
     public ProductPanel createProductPanel(String product_name, String product_price, String product_img, int product_ID) {
         ImageIcon productImage = new ImageIcon(product_img);

@@ -4,10 +4,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.Map;
+
+import javax.swing.JPanel;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+
+import HomeSweetHome.MainPage.ProductPanel;
 
 
 
@@ -19,6 +24,8 @@ public class databaseConnect {
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/homesweethome";
     private static final String USER = personal.Pid;
     private static final String PW = personal.Ppw;
+    
+    
 
     public static Connection connect() throws Exception {
     	try {
@@ -327,8 +334,62 @@ public class databaseConnect {
             close(conn, preparedStatement, null);
         }
     }
+    
+    public List<WishlistItem> getWishListCompo(String loggedInUserID) throws Exception {
+        Connection conn = null;
+        PreparedStatement preparedStatement1 = null;
+        ResultSet rs1 = null;
+        ResultSet rs2 = null;
+
+        List<WishlistItem> wishlistItems = new ArrayList<>();
+
+        try {
+            conn = connect();
+
+            // 위시리스트 테이블에서 wishlist_user_ID가 loggedInUserID와 같은 상품의 wishlist_product_ID를 가져온다.
+            String query1 = "SELECT wishlist_product_ID FROM wishlist WHERE wishlist_user_ID = ?";
+            preparedStatement1 = conn.prepareStatement(query1);
+            preparedStatement1.setString(1, loggedInUserID);
+            rs1 = preparedStatement1.executeQuery();
+
+            // wishlist_product_ID가 있는 경우
+            while (rs1.next()) {
+                // product 테이블에서 wishlist_product_ID와 같은 상품의 정보를 가져온다.
+                int wishlistProductID = rs1.getInt("wishlist_product_ID");
+                String query2 = "SELECT product_img, product_name, product_price, product_ID FROM product WHERE product_ID = ?";
+                PreparedStatement preparedStatement2 = conn.prepareStatement(query2);
+                preparedStatement2.setInt(1, wishlistProductID);
+                rs2 = preparedStatement2.executeQuery();
+
+                while (rs2.next()) {
+                    String productImg = rs2.getString("product_img");
+                    String productName = rs2.getString("product_name");
+                    int productPrice = rs2.getInt("product_price");
+                    int productID = rs2.getInt("product_ID");
+
+                    // WishlistItem에 product_ID 추가
+                    WishlistItem wishlistItem = new WishlistItem(productImg, productName, productPrice,productID);
+                    wishlistItems.add(wishlistItem);
+                }
+            }
 
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQLException occurred while fetching wishlist data: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Exception occurred in initWishListPanel: " + e.getMessage());
+        } finally {
+            //...
+        }
+
+        return wishlistItems;
+    }
     
     
 }
+    
+    
+    
+    
