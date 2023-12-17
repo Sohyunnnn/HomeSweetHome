@@ -93,7 +93,7 @@ public class MainUI extends JFrame {
     public void showMainPage() {
     	int selectedStyleCode = imagePanel.getSelectedStyleCode();
     	mainPage.setLoggedInUserID(logInPanel.getLoggedInUserID()); // loggedInUserID 값을 설정
-    	mainPage.filterProductsByStyle(selectedStyleCode);
+    	mainPage.filterProductsByStyle(selectedStyleCode, 0);
     	mainPage.getScrollPane().requestFocusInWindow();
     	
         cardLayout.show(cardPanel, "MainPage");

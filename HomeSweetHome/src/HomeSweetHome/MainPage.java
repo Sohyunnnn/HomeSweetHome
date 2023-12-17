@@ -17,7 +17,7 @@ public class MainPage extends JPanel {
     private JLabel naturalB = new JLabel("내추럴");
 
     private JLabel lampB = new JLabel("조명");
-    private JLabel chairB = new JLabel("의자");
+    private JLabel chairB = new JLabel("탁상");
     private JLabel bedB = new JLabel("침대");
     private JLabel sofaB = new JLabel("소파");
     //private JTextField Mappingtf = new Mappingtf("검색");
@@ -44,6 +44,7 @@ public class MainPage extends JPanel {
     private String userID;
     private String loggedInUserID;
 
+    private int currentStyleCode=0;
     
     
     public void setLoggedInUserID(String userID) {
@@ -147,14 +148,17 @@ public class MainPage extends JPanel {
         scrollPane.setBounds(0, 200, 974, 430);
         add(scrollPane);
         
-        vintageB.addMouseListener(new StyleButtonListener(2));  // 2는 vintage 스타일 코드
-        modernB.addMouseListener(new StyleButtonListener(1));   // 1은 modern 스타일 코드
-        midcenturyB.addMouseListener(new StyleButtonListener(3));  // 3은 midcentury 스타일 코드
-        contryB.addMouseListener(new StyleButtonListener(4));    // 4는 country 스타일 코드
-        naturalB.addMouseListener(new StyleButtonListener(5)); 
+        vintageB.addMouseListener(new StyleButtonListener(2, 0));  // 2는 vintage 스타일 코드
+        modernB.addMouseListener(new StyleButtonListener(1, 0));   // 1은 modern 스타일 코드
+        midcenturyB.addMouseListener(new StyleButtonListener(3, 0));  // 3은 midcentury 스타일 코드
+        contryB.addMouseListener(new StyleButtonListener(4, 0));    // 4는 country 스타일 코드
+        naturalB.addMouseListener(new StyleButtonListener(5, 0)); 
 
-        
-        
+        lampB.addMouseListener(new FurnitureTypeButtonListener(4)); 
+        chairB.addMouseListener(new FurnitureTypeButtonListener(2)); 
+        bedB.addMouseListener(new FurnitureTypeButtonListener(1)); 
+        sofaB.addMouseListener(new FurnitureTypeButtonListener(3));  
+
         
 
         LogoutB.addMouseListener(new MouseAdapter() {
@@ -409,27 +413,51 @@ public class MainPage extends JPanel {
     
     
     private class StyleButtonListener extends MouseAdapter {
-    	private int styleCode;
+        private int styleCode;
+        private int furnitureType;
 
-        public StyleButtonListener(int styleCode) {
-            this.styleCode = styleCode;
-        }
+         public StyleButtonListener(int styleCode, int furnitureType) {
+        	
+        	 this.styleCode = styleCode;
+             this.furnitureType = furnitureType;
+         }
 
-        @Override
-        public void mouseClicked(MouseEvent e) {
-        	setStyleCode(styleCode);
-            filterProductsByStyle(styleCode);
-        }
-    }
-    private void setStyleCode(int styleCode) {
-        this.styleCode = styleCode;
-    }
+         @Override
+         public void mouseClicked(MouseEvent e) {
+            //setStyleCode(styleCode);
+//            if(furnitureType > 0) {
+//            	filterProductsByStyle(styleCode, furnitureType);
+//       	 }
+//            else {
+//            	filterProductsByStyle(styleCode, furnitureType);
+//            }
+            currentStyleCode = styleCode;
+            filterProductsByStyle(currentStyleCode, furnitureType);
+         }
+     }
+     private void setStyleCode(int styleCode) {
+    	 //this.styleCode = styleCode;
+         this.currentStyleCode = styleCode;
+     }
+     
+     class FurnitureTypeButtonListener extends MouseAdapter {
+         private int furnitureType;
+
+         public FurnitureTypeButtonListener(int furnitureType) {
+             this.furnitureType = furnitureType;
+         }
+
+         @Override
+         public void mouseClicked(MouseEvent e) {
+             filterProductsByStyle(currentStyleCode, furnitureType);
+         }
+     }
+
     
-    
-    public void filterProductsByStyle(int styleCode) {
+    public void filterProductsByStyle(int styleCode, int furnitureType) {
     	ResultSet resultSet = null;
         try {
-            resultSet = databaseConnect.getProducts(styleCode);
+            resultSet = databaseConnect.getProducts(styleCode, furnitureType);
             if (resultSet != null && !resultSet.isClosed()) {
                 updateProductComponents(resultSet);
             } else {
