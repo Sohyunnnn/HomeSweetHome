@@ -6,18 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter; 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.*;
-import java.sql.ResultSet;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 
 import HomeSweetHome.MainPage.ProductPanel;
-import HomeSweetHome.databaseConnect;
-import HomeSweetHome.WishlistItem;
 
 
 
@@ -49,11 +41,9 @@ public class MainUI extends JFrame {
         signUpPanel = new SignUpPanel(this);
         logInPanel = new LogInPanel(this);
         imagePanel = new ImagePanel(this);
-        //wishListPanel = new WishListPanel(this, databaseConnect);
         wishListPanel = new WishListPanel(this);
         mainPage = new MainPage(this);
         
-        //databaseConnect = new databaseConnect();
         
 
         cardPanel.add(startPanel, "start");
@@ -114,32 +104,6 @@ public class MainUI extends JFrame {
         new MainUI();
     }
     
-//    public static void main(String[] args) {
-//        MainUI mainUI = new MainUI();
-//
-//        // 프로그램이 종료될 때 데이터베이스 연결 닫기
-//        mainUI.addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosing(WindowEvent e) {
-//                try {
-//                    databaseConnect dbConnect = mainUI.getDatabaseConnect();
-//                    if (dbConnect != null) {
-//                        // 여기서 사용 중인 Connection 객체의 참조를 가져와 전달
-//                        Connection connection = dbConnect.connect(); // 예시일 뿐, 실제로는 여러분이 사용하는 메서드를 호출해야 함
-//                        Statement statement = null;
-//
-//                        // 전달된 객체를 사용하여 close 메서드 호출
-//                        dbConnect.close(connection, statement);
-//
-//                        System.out.println("Database connection closed.");
-//                    }
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        });
-//    }
-
 
 
     
@@ -515,7 +479,6 @@ class WishListPanel extends JPanel {
 	private JLabel id;
 	private String loggedInUserID;
 	private databaseConnect databaseConnect;
-	private boolean isInWishlist;
 	private JScrollPane scrollPane;
 	
 	private JPanel WishPanelContainer;
@@ -589,8 +552,6 @@ class WishListPanel extends JPanel {
         // 찜목록 스크롤 패널 관련 코드
         WishPanelContainer = new JPanel();
         WishPanelContainer.setLayout(null);
-        
-        //WishPanelContainer.setLayout(new FlowLayout(FlowLayout.LEFT, 14, 14));
         WishPanelContainer.setPreferredSize(new Dimension(312, 2000));
         WishPanelContainer.setBackground(Color.WHITE);
         

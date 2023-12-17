@@ -3,16 +3,13 @@ package HomeSweetHome;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.util.Map;
 
-import javax.swing.JPanel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import HomeSweetHome.MainPage.ProductPanel;
 
 
 
@@ -335,6 +332,8 @@ public class databaseConnect {
         }
     }
     
+    
+    //위시리스트페이지 컴포넌트에 데이터 받아오는 코드
     public List<WishlistItem> getWishListCompo(String loggedInUserID) throws Exception {
         Connection conn = null;
         PreparedStatement preparedStatement1 = null;
