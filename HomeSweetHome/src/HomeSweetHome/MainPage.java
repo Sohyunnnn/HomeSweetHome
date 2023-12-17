@@ -20,7 +20,7 @@ public class MainPage extends JPanel {
     private JLabel chairB = new JLabel("의자");
     private JLabel bedB = new JLabel("침대");
     private JLabel sofaB = new JLabel("소파");
-    private JTextField Mappingtf = new Mappingtf("검색");
+    //private JTextField Mappingtf = new Mappingtf("검색");
     private CustomSlider PriceSl = new CustomSlider();
     private String[] sort = {"최신순", "인기순", "높은가격순", "낮은가격순"};
     private JComboBox<String> strCombo = new JComboBox<String>(sort);
@@ -41,7 +41,6 @@ public class MainPage extends JPanel {
     private JScrollPane scrollPane;
     private JPanel productPanelContainer;
     
-    private int productID;
     private String userID;
     private String loggedInUserID;
 
@@ -50,8 +49,6 @@ public class MainPage extends JPanel {
     public void setLoggedInUserID(String userID) {
         this.userID = userID;
         this.loggedInUserID = userID;
-        //System.out.println("user ID: " + userID);
-        //System.out.println("loggedInUserID: " + loggedInUserID);
     }
     
     public MainPage(MainUI mainUI) {
@@ -63,8 +60,6 @@ public class MainPage extends JPanel {
         
         this.userID = loggedInUserID;
 
-        //System.out.println("user ID: " + userID);
-        //System.out.println("loggedInUserID: " + loggedInUserID);
         
         
         vintageB.setBounds(103, 84, 93, 24);
@@ -77,7 +72,7 @@ public class MainPage extends JPanel {
         chairB.setBounds(169, 138, 93, 24);
         bedB.setBounds(70, 138, 93, 24);
         sofaB.setBounds(263, 138, 93, 24);
-        Mappingtf.setBounds(311, 25, 428, 28);
+        //Mappingtf.setBounds(311, 25, 428, 28);
 
         LogoutB.setBounds(773, 22, 95, 32);
         LogoutB.setBackground(Color.decode("#D9D9D9"));
@@ -116,7 +111,7 @@ public class MainPage extends JPanel {
 
         add(LogoutB);
         add(smallLogoLabel);
-        add(Mappingtf);
+        //add(Mappingtf);
         add(PriceSl);
         add(maxPriceLabel);
         add(minPriceLabel);
@@ -135,14 +130,19 @@ public class MainPage extends JPanel {
             }
         });
         
+        smallLogoLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	mainUI.showWishListPanel();
+            }
+        });
+        
 
         setBackground(Color.WHITE);
         productComponents = new ArrayList<>();
         
         productPanelContainer.setPreferredSize(new Dimension(1000, 2000));
-        //productPanelContainer.setBounds(0,200, 1000, 2000);
-        //productPanelContainer.setBackground(Color.WHITE);
-        productPanelContainer.setBackground(Color.GRAY);
+        productPanelContainer.setBackground(Color.WHITE);
         scrollPane = new JScrollPane(productPanelContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(0, 200, 974, 430);
         add(scrollPane);
@@ -157,12 +157,25 @@ public class MainPage extends JPanel {
         
         
 
-        LogoutB.addActionListener(new ActionListener() {
+        LogoutB.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                mainUI.showStartPanel();
+            public void mouseClicked(MouseEvent e) {
+                // 마우스 클릭 시의 동작
+                int response = JOptionPane.showConfirmDialog(
+                        null,
+                        "프로그램을 종료하시겠습니까?",
+                        "종료 확인",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (response == JOptionPane.YES_OPTION) {
+                    System.exit(0); // 프로그램 종료
+                } else {
+                    mainUI.showLogInPanel(); // 로그인 화면으로 전환
+                }
             }
         });
+        
 
         profileB.addActionListener(new ActionListener() {
             @Override
@@ -204,7 +217,8 @@ public class MainPage extends JPanel {
     }
 
     public JScrollPane getScrollPane() {	
-    	return scrollPane;	}
+    	return scrollPane;	
+    	}
     	
     public ProductPanel createProductPanel(String product_name, String product_price, String product_img, int product_ID) {
         ImageIcon productImage = new ImageIcon(product_img);
@@ -244,36 +258,36 @@ public class MainPage extends JPanel {
         return productPanel;
     }
 
-    //검색 기능
-    
-    class Mappingtf extends JTextField {
-        private String mapword;
-
-        public Mappingtf(String mapword) {
-            this.mapword = mapword;
-            setForeground(Color.GRAY);
-            setText(mapword);
-            setFont(new Font("굴림체", Font.PLAIN, 12));
-
-            this.addFocusListener(new FocusListener() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    if (getText().equals(mapword)) {
-                        setText("");
-                        setForeground(Color.BLACK);
-                    }
-                }
-
-                @Override
-                public void focusLost(FocusEvent e) {
-                    if (getText().isEmpty()) {
-                        setText(mapword);
-                        setForeground(Color.GRAY);
-                    }
-                }
-            });
-        }
-    }
+//    //검색 기능
+//    
+//    class Mappingtf extends JTextField {
+//        private String mapword;
+//
+//        public Mappingtf(String mapword) {
+//            this.mapword = mapword;
+//            setForeground(Color.GRAY);
+//            setText(mapword);
+//            setFont(new Font("굴림체", Font.PLAIN, 12));
+//
+//            this.addFocusListener(new FocusListener() {
+//                @Override
+//                public void focusGained(FocusEvent e) {
+//                    if (getText().equals(mapword)) {
+//                        setText("");
+//                        setForeground(Color.BLACK);
+//                    }
+//                }
+//
+//                @Override
+//                public void focusLost(FocusEvent e) {
+//                    if (getText().isEmpty()) {
+//                        setText(mapword);
+//                        setForeground(Color.GRAY);
+//                    }
+//                }
+//            });
+//        }
+//    }
     
     public static class ProductPanel extends JPanel {
 

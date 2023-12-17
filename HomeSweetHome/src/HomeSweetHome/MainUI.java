@@ -6,16 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter; 
-
-import java.sql.ResultSet;
 import java.util.List;
-import java.util.*;
-import java.sql.ResultSet;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+
 
 import HomeSweetHome.MainPage.ProductPanel;
-import HomeSweetHome.databaseConnect;
+
+
 
 import java.awt.event.MouseEvent; 
 
@@ -48,11 +44,9 @@ public class MainUI extends JFrame {
         signUpPanel = new SignUpPanel(this);
         logInPanel = new LogInPanel(this);
         imagePanel = new ImagePanel(this);
-        //wishListPanel = new WishListPanel(this, databaseConnect);
         wishListPanel = new WishListPanel(this);
         mainPage = new MainPage(this);
         
-        //databaseConnect = new databaseConnect();
         
 
         cardPanel.add(startPanel, "start");
@@ -92,7 +86,8 @@ public class MainUI extends JFrame {
     }
     
     public void showWishListPanel() {
-        cardLayout.show(cardPanel, "WishList");
+        wishListPanel.setLoggedInUserID(logInPanel.getLoggedInUserID()); // 혹시라도 로그인 상태가 변경됐다면 다시 설정
+        cardLayout.show(cardPanel, "WishList"); // WishListPanel로 전환
     }
     
     public void showMainPage() {
@@ -113,32 +108,6 @@ public class MainUI extends JFrame {
         new MainUI();
     }
     
-//    public static void main(String[] args) {
-//        MainUI mainUI = new MainUI();
-//
-//        // 프로그램이 종료될 때 데이터베이스 연결 닫기
-//        mainUI.addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosing(WindowEvent e) {
-//                try {
-//                    databaseConnect dbConnect = mainUI.getDatabaseConnect();
-//                    if (dbConnect != null) {
-//                        // 여기서 사용 중인 Connection 객체의 참조를 가져와 전달
-//                        Connection connection = dbConnect.connect(); // 예시일 뿐, 실제로는 여러분이 사용하는 메서드를 호출해야 함
-//                        Statement statement = null;
-//
-//                        // 전달된 객체를 사용하여 close 메서드 호출
-//                        dbConnect.close(connection, statement);
-//
-//                        System.out.println("Database connection closed.");
-//                    }
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        });
-//    }
-
 
 
     
@@ -484,19 +453,16 @@ class WishListPanel extends JPanel {
 	private JLabel id;
 	private String loggedInUserID;
 	private databaseConnect databaseConnect;
-	private boolean isInWishlist;
 	private JScrollPane scrollPane;
 	
 	private JPanel WishPanelContainer;
 	
 	
-	//public WishListPanel(MainUI mainUI, databaseConnect databaseConnect) {
+
 	public WishListPanel(MainUI mainUI) {
 		
 	    setLayout(null);
 	    databaseConnect = new databaseConnect();
-        
-	    initWishListPanel();
         
 
         id = new JLabel();
@@ -552,6 +518,13 @@ class WishListPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
             	mainUI.showMainPage();
+            }
+        });
+        
+        smallLogoLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	mainUI.showWishListPanel();
             }
         });
         
@@ -612,74 +585,56 @@ class WishListPanel extends JPanel {
 		
 	void initWishListPanel() {
 	    if (databaseConnect == null) {
-	        databaseConnect = new databaseConnect(); // 이 부분을 추가하여 초기화
-	        // 또는 다른 방법으로 databaseConnect를 초기화해주세요.
+	        databaseConnect = new databaseConnect(); // null인 경우 초기화
 	    }
 
-	    ResultSet wishlistProductsResultSet = null;
-	    ResultSet productInfoResultSet = null;
-
 	    try {
-	        wishlistProductsResultSet = databaseConnect.getWishlistProductInfo(loggedInUserID);
+	    	
+	    	WishPanelContainer.removeAll();
+	        
+	        
+	        List<WishlistItem> wishlistItems = databaseConnect.getWishListCompo(loggedInUserID);
 
-	        if (wishlistProductsResultSet == null) {
-	            System.out.println("ResultSet is null.");
-	            return;
-	        }
-	        if (wishlistProductsResultSet.isClosed()) {
-	            System.out.println("ResultSet is closed.");
-	            return;
-	        }
+	        int x = 8;  // 초기 x 좌표
+	        int y = 143; // 초기 y 좌표
 
-	        List<Integer> wishlistProductIds = new ArrayList<>();
+	        for (WishlistItem wishlistItem : wishlistItems) {
+	            String productImg = wishlistItem.getProductImg();
+	            String productName = wishlistItem.getProductName();
+	            int productPrice = wishlistItem.getProductPrice();
+	            int productID = wishlistItem.getProductID();
+	            System.out.println(productID);
 
-	        if (wishlistProductsResultSet != null) {
-	            while (wishlistProductsResultSet.next()) {
-	                int wishlistProductID = wishlistProductsResultSet.getInt("wishlist_product_ID");
-	                wishlistProductIds.add(wishlistProductID);
+
+	            // ProductPanel을 생성하고 WishListPanel에 추가
+	            ProductPanel productPanel = createProductPanel(productName, String.valueOf(productPrice), productImg, productID);
+	            productPanel.setWishlistStatus(true);
+	            
+	            // 위치 설정
+	            productPanel.setBounds(x, y, productPanel.getWidth(), productPanel.getHeight());
+
+	            WishPanelContainer.add(productPanel);
+
+	            // 다음 위치 계산
+	            x += 214; // x 좌표 이동
+	            if (x + 214 > 660) {
+	                // x 좌표가 너무 크면 다음 줄로 이동
+	                x = 8;
+	                y += 235; // y 좌표 이동
 	            }
+	            
 	        }
-
-	        for (Integer wishlistProductId : wishlistProductIds) {
-	            System.out.println("wishlistProductId에 대한 루프 진입: " + wishlistProductId);
-
-	            productInfoResultSet = databaseConnect.getProductInfo(wishlistProductId);
-
-	            while (productInfoResultSet.next()) {
-	                String product_name = productInfoResultSet.getString("product_name");
-	                String product_price = productInfoResultSet.getString("product_price");
-	                String product_img = productInfoResultSet.getString("product_img");
-
-	                ProductPanel productPanel = createProductPanel(product_name, product_price, product_img, wishlistProductId);
-	                productPanel.setWishlistStatus(true);
-
-	                System.out.println(product_price);
-
-	                WishPanelContainer.add(productPanel);
-	            }
-
-	            // productInfoResultSet 사용 후 닫기
-	            if (productInfoResultSet != null) {
-	                productInfoResultSet.close();
-	                System.out.println("productInfoResultSet closed.");
-	            }
-	        }
-
+	        revalidate();
+	        repaint();
+	        
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        System.out.println("initWishListPanel에서 예외 발생: " + e.getMessage());
-	    } finally {
-	        try {
-	            // ResultSet 사용 후 반드시 닫기
-	            if (wishlistProductsResultSet != null) {
-	                wishlistProductsResultSet.close();
-	                System.out.println("wishlistProductsResultSet closed.");
-	            }
-	        } catch (Exception ex) {
-	            ex.printStackTrace();
-	        }
-	    }
+	    } finally {}
 	}
+
+
+
 
 
 		 
@@ -695,6 +650,7 @@ class WishListPanel extends JPanel {
         initWishListPanel();
     }
     
+    
     public ProductPanel createProductPanel(String product_name, String product_price, String product_img, int product_ID) {
         ImageIcon productImage = new ImageIcon(product_img);
         
@@ -704,7 +660,7 @@ class WishListPanel extends JPanel {
 
         // ProductLabel 내부의 컴포넌트 크기 및 배치 설정
         productPanel.setLayout(null);
-        //productPanel.setBounds(200, 220, 45, 239);
+        productPanel.setBounds(10, 134, 200, 220);
         productPanel.setBackground(new Color(139, 158, 211));
 
         // 이미지 크기 및 위치
