@@ -6,7 +6,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -51,20 +50,21 @@ public class MainPage extends JPanel {
     public void setLoggedInUserID(String userID) {
         this.userID = userID;
         this.loggedInUserID = userID;
-        System.out.println("user ID: " + userID);
-        System.out.println("loggedInUserID: " + loggedInUserID);
+        //System.out.println("user ID: " + userID);
+        //System.out.println("loggedInUserID: " + loggedInUserID);
     }
     
     public MainPage(MainUI mainUI) {
         setLayout(null);
 
         databaseConnect = new databaseConnect();
+        System.out.println("메인 실행");
         
         
         this.userID = loggedInUserID;
 
-        System.out.println("user ID: " + userID);
-        System.out.println("loggedInUserID: " + loggedInUserID);
+        //System.out.println("user ID: " + userID);
+        //System.out.println("loggedInUserID: " + loggedInUserID);
         
         
         vintageB.setBounds(103, 84, 93, 24);
@@ -122,13 +122,27 @@ public class MainPage extends JPanel {
         add(minPriceLabel);
         add(strCombo);
         
+        
+        ImageIcon backButtonImg= new ImageIcon("images/backButton.png");
+        JLabel backButton = new JLabel(backButtonImg);
+        backButton.setBounds(20, 66, 32, 32);
+        add(backButton);
+        
+        backButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	mainUI.showImagePanel();
+            }
+        });
+        
 
         setBackground(Color.WHITE);
         productComponents = new ArrayList<>();
         
         productPanelContainer.setPreferredSize(new Dimension(1000, 2000));
         //productPanelContainer.setBounds(0,200, 1000, 2000);
-        productPanelContainer.setBackground(Color.WHITE);
+        //productPanelContainer.setBackground(Color.WHITE);
+        productPanelContainer.setBackground(Color.GRAY);
         scrollPane = new JScrollPane(productPanelContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(0, 200, 974, 430);
         add(scrollPane);
@@ -154,11 +168,14 @@ public class MainPage extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             	
-            	// profileB 버튼을 누를 때 loggedInUserID 값을 가져와서
+            	// profileB 버튼을 누를 때 loggedInUserID 값을 가져오기
                 String loggedInUserID = mainUI.getLoggedInUserID();
 
                 // WishListPanel에 해당 값을 전달
                 mainUI.getWishListPanel().setLoggedInUserID(loggedInUserID);
+                
+             // initWishListPanel을 호출하여 초기화
+                //mainUI.getWishListPanel().initWishListPanel();
             	
                 mainUI.showWishListPanel();//
             }
@@ -189,7 +206,7 @@ public class MainPage extends JPanel {
     public JScrollPane getScrollPane() {	
     	return scrollPane;	}
     	
-    private ProductPanel createProductPanel(String product_name, String product_price, String product_img, int product_ID) {
+    public ProductPanel createProductPanel(String product_name, String product_price, String product_img, int product_ID) {
         ImageIcon productImage = new ImageIcon(product_img);
         
         ProductPanel productPanel = new ProductPanel(product_name, String.valueOf(product_price), productImage,product_ID, this.userID);
@@ -522,6 +539,8 @@ public class MainPage extends JPanel {
             return false; 
         }
     }
+    
+    
     
     
 }

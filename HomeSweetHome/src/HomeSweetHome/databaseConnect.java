@@ -3,17 +3,27 @@ package HomeSweetHome;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.Map;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
+
+
+
 
 public class databaseConnect {
 	
 	
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/homesweethome";
+
+    private static final String USER = personal.Pid;
+    private static final String PW = personal.Ppw;
+
     private static final String USER = "root";
     private static final String PW = "";
+
 
     public static Connection connect() throws Exception {
     	try {
@@ -31,8 +41,8 @@ public class databaseConnect {
     private Connection getConnection() throws SQLException {
         // MySQL 서버의 JDBC URL, 사용자 이름 및 암호
         String url = "jdbc:mysql://localhost:3306/homesweethome";
-        String user = "root";
-        String password = "";
+        String user = personal.Pid;
+        String password = personal.Ppw;
 
         // 연결을 설정합니다.
         Connection connection = DriverManager.getConnection(url, user, password);
@@ -270,6 +280,63 @@ public class databaseConnect {
             close(connection, preparedStatement, resultSet);
         }
     }
+
+
+    public ResultSet getProductInfo(int productID) throws Exception {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conn = connect();
+
+            String query = "SELECT * FROM product WHERE product_ID = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, productID);
+
+            resultSet = preparedStatement.executeQuery();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            close(conn, preparedStatement);
+        }
+
+        return resultSet;
+    }
+
+
+
+
+
+ // 위시리스트에서 제품 정보 가져오기
+    public ResultSet getWishlistProductInfo(String userID) throws Exception {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conn = connect();
+
+            String query = "SELECT product.* FROM product INNER JOIN wishlist ON product.product_ID = wishlist.wishlist_product_ID WHERE wishlist.wishlist_user_ID = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+
+            resultSet = preparedStatement.executeQuery();
+
+            return resultSet;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            close(conn, preparedStatement, null);
+        }
+    }
+
+
+    
+    
 
   
   
