@@ -157,12 +157,25 @@ public class MainPage extends JPanel {
         
         
 
-        LogoutB.addActionListener(new ActionListener() {
+        LogoutB.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                mainUI.showStartPanel();
+            public void mouseClicked(MouseEvent e) {
+                // 마우스 클릭 시의 동작
+                int response = JOptionPane.showConfirmDialog(
+                        null,
+                        "프로그램을 종료하시겠습니까?",
+                        "종료 확인",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (response == JOptionPane.YES_OPTION) {
+                    System.exit(0); // 프로그램 종료
+                } else {
+                    mainUI.showLogInPanel(); // 로그인 화면으로 전환
+                }
             }
         });
+        
 
         profileB.addActionListener(new ActionListener() {
             @Override

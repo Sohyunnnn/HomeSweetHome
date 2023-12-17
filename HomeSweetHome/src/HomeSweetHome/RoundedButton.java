@@ -48,8 +48,6 @@ public class RoundedButton extends JButton {
         Color c = getBackground();
         Color o = getForeground();//외부에서 색을 지정하도록 설정
         
-//        Color c = new Color(0x16, 0x3A, 0x9C);
-//        Color o = new Color(255, 255, 255);
         
         int width = getWidth();
         int height = getHeight();
