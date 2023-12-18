@@ -45,6 +45,9 @@ public class MainPage extends JPanel {
     private String loggedInUserID;
 
     private int currentStyleCode=0;
+    private int currentfurnitureType=0;
+    private int maxprice;
+    private int minprice;
     
     
     public void setLoggedInUserID(String userID) {
@@ -209,14 +212,25 @@ public class MainPage extends JPanel {
             public void stateChanged(ChangeEvent e) {
                 int minPrice = PriceSl.getLowerValue();
                 int maxPrice = PriceSl.getUpperValue();
+                //최소, 최대값을 DB에서 상품 가져오는 메소드에 넣기..
+                setPrice(minPrice, maxPrice);
                 maxPriceLabel.setText(String.valueOf(maxPrice));
                 minPriceLabel.setText(String.valueOf(minPrice));
+                //System.out.println("Slider values changed. Min Price: " + minPrice + ", Max Price: " + maxPrice); // 디버깅을 위한 출력 추가
+                filterProductsByStyle(currentStyleCode, currentfurnitureType);
             }
         });
         
         
+        
      // 메인페이지가 생성될 때 현재 로그인한 유저의 위시리스트를 조회하여 하트 색상 업데이트
         updateHeartIcons();
+        
+    }
+    private void setPrice(int minPrice, int maxPrice) {
+    	this.maxprice = maxPrice;
+    	this.minprice = minPrice;
+    	System.out.println("Slider values changed. Min Price: " + minprice + ", Max Price: " + maxprice); // 디버깅을 위한 출력 추가
         
     }
 
@@ -436,7 +450,6 @@ public class MainPage extends JPanel {
          }
      }
      private void setStyleCode(int styleCode) {
-    	 //this.styleCode = styleCode;
          this.currentStyleCode = styleCode;
      }
      
@@ -449,6 +462,7 @@ public class MainPage extends JPanel {
 
          @Override
          public void mouseClicked(MouseEvent e) {
+        	 currentfurnitureType = furnitureType;
              filterProductsByStyle(currentStyleCode, furnitureType);
          }
      }
@@ -457,8 +471,12 @@ public class MainPage extends JPanel {
     public void filterProductsByStyle(int styleCode, int furnitureType) {
     	ResultSet resultSet = null;
         try {
-            resultSet = databaseConnect.getProducts(styleCode, furnitureType);
+        	System.out.println("Filtering products...");
+        	 System.out.println("스타일코드"+styleCode+" F_type"+furnitureType);
+        	 System.out.println("Min Price: " + minprice + ", Max Price: " + maxprice); // 디버깅을 위한 출력 추가
+            resultSet = databaseConnect.getProducts(styleCode, furnitureType, minprice, maxprice);
             if (resultSet != null && !resultSet.isClosed()) {
+            	System.out.println("Updating product components...");
                 updateProductComponents(resultSet);
             } else {
                 System.out.println("ResultSet is null or closed.");
