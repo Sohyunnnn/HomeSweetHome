@@ -247,17 +247,50 @@ class SignUpPanel extends JPanel {
         SignUpConfirmation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //mainUI.showStartPanel(); // StartPanel로 전환
-            	mainUI.showWishListPanel();
+                try {
+                    String username = idInput.getText();
+                    String password = new String(passwordInput.getPassword());
+                    String confirmPassword = new String(passCheckInput.getPassword());
+
+                    if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                        // 빈 필드 처리
+                        JOptionPane.showMessageDialog(null, "회원가입에 실패했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    } else if (!password.equals(confirmPassword)) {
+                        // 비밀번호 불일치 처리
+                        JOptionPane.showMessageDialog(null, "비밀번호를 다시 입력해주세요.", "오류", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // 중복된 아이디 확인
+                    if (databaseConnect.isUserExists(username)) {
+                        JOptionPane.showMessageDialog(null, "이미 존재하는 아이디입니다.", "오류", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // 사용자 정보를 데이터베이스에 저장
+                    if (databaseConnect.storeUserInDatabase(username, password)) {
+                        // 등록 성공
+                    	JOptionPane.showMessageDialog(null, "환영합니다. 회원가입에 성공했습니다.", "회원가입 성공", JOptionPane.PLAIN_MESSAGE);
+                        mainUI.showStartPanel();
+                    } else {
+                        // 등록 실패
+                        JOptionPane.showMessageDialog(null, "등록에 실패했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    // 예외 처리
+                    ex.printStackTrace(); // 또는 다른 예외 처리 로직을 추가할 수 있음
+                }
             }
         });
+        
 
-  
 
 
 
     }
 }
+
 
 
 class LogInPanel extends JPanel {
@@ -344,8 +377,6 @@ class LogInPanel extends JPanel {
                     ex.printStackTrace(); // 또는 다른 예외 처리 로직을 추가할 수 있음
                 }
 
-
-                mainUI.showImagePanel(); // StartPanel로 전환 
             }
         });
     }
@@ -358,6 +389,7 @@ class LogInPanel extends JPanel {
         
     }
 }
+
 
 
 class ImagePanel extends JPanel { 
@@ -540,14 +572,7 @@ class WishListPanel extends JPanel {
         scrollPane.setBackground(Color.white);
         add(scrollPane);
         
-        JLabel wishList = new JLabel("찜 목록");
-        wishList.setBounds(28, 49, 200, 47);
-        wishList.setFont(new Font("굴림체", Font.PLAIN, 35));
-        add(wishList);
         
-        WishPanelContainer.add(wishList);
-        
-        scrollPane.setViewportView(WishPanelContainer);
 
         
         logOut.addMouseListener(new MouseAdapter() {
@@ -591,6 +616,14 @@ class WishListPanel extends JPanel {
 	    try {
 	    	
 	    	WishPanelContainer.removeAll();
+	    	JLabel wishList = new JLabel("찜 목록");
+	        wishList.setBounds(28, 49, 200, 47);
+	        wishList.setFont(new Font("굴림체", Font.PLAIN, 35));
+	        add(wishList);
+	        
+	        WishPanelContainer.add(wishList);
+	        
+	        scrollPane.setViewportView(WishPanelContainer);
 	        
 	        
 	        List<WishlistItem> wishlistItems = databaseConnect.getWishListCompo(loggedInUserID);
