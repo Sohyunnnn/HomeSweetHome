@@ -17,10 +17,9 @@ public class MainPage extends JPanel {
     private JLabel naturalB = new JLabel("내추럴");
 
     private JLabel lampB = new JLabel("조명");
-    private JLabel chairB = new JLabel("의자");
+    private JLabel chairB = new JLabel("탁상");
     private JLabel bedB = new JLabel("침대");
     private JLabel sofaB = new JLabel("소파");
-    //private JTextField Mappingtf = new Mappingtf("검색");
     private CustomSlider PriceSl = new CustomSlider();
     private String[] sort = {"최신순", "인기순", "높은가격순", "낮은가격순"};
     private JComboBox<String> strCombo = new JComboBox<String>(sort);
@@ -44,6 +43,10 @@ public class MainPage extends JPanel {
     private String userID;
     private String loggedInUserID;
 
+    private int currentStyleCode=0;
+    private int currentfurnitureType=0;
+    private int maxprice;
+    private int minprice;
     
     
     public void setLoggedInUserID(String userID) {
@@ -72,7 +75,6 @@ public class MainPage extends JPanel {
         chairB.setBounds(169, 138, 93, 24);
         bedB.setBounds(70, 138, 93, 24);
         sofaB.setBounds(263, 138, 93, 24);
-        //Mappingtf.setBounds(311, 25, 428, 28);
 
         LogoutB.setBounds(773, 22, 95, 32);
         LogoutB.setBackground(Color.decode("#D9D9D9"));
@@ -111,7 +113,6 @@ public class MainPage extends JPanel {
 
         add(LogoutB);
         add(smallLogoLabel);
-        //add(Mappingtf);
         add(PriceSl);
         add(maxPriceLabel);
         add(minPriceLabel);
@@ -147,14 +148,17 @@ public class MainPage extends JPanel {
         scrollPane.setBounds(0, 200, 974, 430);
         add(scrollPane);
         
-        vintageB.addMouseListener(new StyleButtonListener(2));  // 2는 vintage 스타일 코드
-        modernB.addMouseListener(new StyleButtonListener(1));   // 1은 modern 스타일 코드
-        midcenturyB.addMouseListener(new StyleButtonListener(3));  // 3은 midcentury 스타일 코드
-        contryB.addMouseListener(new StyleButtonListener(4));    // 4는 country 스타일 코드
-        naturalB.addMouseListener(new StyleButtonListener(5)); 
+        vintageB.addMouseListener(new StyleButtonListener(2, 0));  // 2는 vintage 스타일 코드
+        modernB.addMouseListener(new StyleButtonListener(1, 0));   // 1은 modern 스타일 코드
+        midcenturyB.addMouseListener(new StyleButtonListener(3, 0));  // 3은 midcentury 스타일 코드
+        contryB.addMouseListener(new StyleButtonListener(4, 0));    // 4는 country 스타일 코드
+        naturalB.addMouseListener(new StyleButtonListener(5, 0)); 
 
-        
-        
+        lampB.addMouseListener(new FurnitureTypeButtonListener(4)); 
+        chairB.addMouseListener(new FurnitureTypeButtonListener(2)); 
+        bedB.addMouseListener(new FurnitureTypeButtonListener(1)); 
+        sofaB.addMouseListener(new FurnitureTypeButtonListener(3));  
+
         
 
         LogoutB.addMouseListener(new MouseAdapter() {
@@ -205,14 +209,25 @@ public class MainPage extends JPanel {
             public void stateChanged(ChangeEvent e) {
                 int minPrice = PriceSl.getLowerValue();
                 int maxPrice = PriceSl.getUpperValue();
+                //최소, 최대값을 DB에서 상품 가져오는 메소드에 넣기..
+                setPrice(minPrice, maxPrice);
                 maxPriceLabel.setText(String.valueOf(maxPrice));
                 minPriceLabel.setText(String.valueOf(minPrice));
+                //System.out.println("Slider values changed. Min Price: " + minPrice + ", Max Price: " + maxPrice); // 디버깅을 위한 출력 추가
+                filterProductsByStyle(currentStyleCode, currentfurnitureType);
             }
         });
         
         
+        
      // 메인페이지가 생성될 때 현재 로그인한 유저의 위시리스트를 조회하여 하트 색상 업데이트
         updateHeartIcons();
+        
+    }
+    private void setPrice(int minPrice, int maxPrice) {
+    	this.maxprice = maxPrice;
+    	this.minprice = minPrice;
+    	System.out.println("Slider values changed. Min Price: " + minprice + ", Max Price: " + maxprice); // 디버깅을 위한 출력 추가
         
     }
 
@@ -258,36 +273,7 @@ public class MainPage extends JPanel {
         return productPanel;
     }
 
-//    //검색 기능
-//    
-//    class Mappingtf extends JTextField {
-//        private String mapword;
-//
-//        public Mappingtf(String mapword) {
-//            this.mapword = mapword;
-//            setForeground(Color.GRAY);
-//            setText(mapword);
-//            setFont(new Font("굴림체", Font.PLAIN, 12));
-//
-//            this.addFocusListener(new FocusListener() {
-//                @Override
-//                public void focusGained(FocusEvent e) {
-//                    if (getText().equals(mapword)) {
-//                        setText("");
-//                        setForeground(Color.BLACK);
-//                    }
-//                }
-//
-//                @Override
-//                public void focusLost(FocusEvent e) {
-//                    if (getText().isEmpty()) {
-//                        setText(mapword);
-//                        setForeground(Color.GRAY);
-//                    }
-//                }
-//            });
-//        }
-//    }
+
     
     public static class ProductPanel extends JPanel {
 
@@ -409,28 +395,56 @@ public class MainPage extends JPanel {
     
     
     private class StyleButtonListener extends MouseAdapter {
-    	private int styleCode;
+        private int styleCode;
+        private int furnitureType;
 
-        public StyleButtonListener(int styleCode) {
-            this.styleCode = styleCode;
-        }
+         public StyleButtonListener(int styleCode, int furnitureType) {
+        	
+        	 this.styleCode = styleCode;
+             this.furnitureType = furnitureType;
+         }
 
-        @Override
-        public void mouseClicked(MouseEvent e) {
-        	setStyleCode(styleCode);
-            filterProductsByStyle(styleCode);
-        }
-    }
-    private void setStyleCode(int styleCode) {
-        this.styleCode = styleCode;
-    }
+         @Override
+         public void mouseClicked(MouseEvent e) {
+            //setStyleCode(styleCode);
+//            if(furnitureType > 0) {
+//            	filterProductsByStyle(styleCode, furnitureType);
+//       	 }
+//            else {
+//            	filterProductsByStyle(styleCode, furnitureType);
+//            }
+            currentStyleCode = styleCode;
+            filterProductsByStyle(currentStyleCode, furnitureType);
+         }
+     }
+     private void setStyleCode(int styleCode) {
+         this.currentStyleCode = styleCode;
+     }
+     
+     class FurnitureTypeButtonListener extends MouseAdapter {
+         private int furnitureType;
+
+         public FurnitureTypeButtonListener(int furnitureType) {
+             this.furnitureType = furnitureType;
+         }
+
+         @Override
+         public void mouseClicked(MouseEvent e) {
+        	 currentfurnitureType = furnitureType;
+             filterProductsByStyle(currentStyleCode, furnitureType);
+         }
+     }
+
     
-    
-    public void filterProductsByStyle(int styleCode) {
+    public void filterProductsByStyle(int styleCode, int furnitureType) {
     	ResultSet resultSet = null;
         try {
-            resultSet = databaseConnect.getProducts(styleCode);
+        	System.out.println("Filtering products...");
+        	 System.out.println("스타일코드"+styleCode+" F_type"+furnitureType);
+        	 System.out.println("Min Price: " + minprice + ", Max Price: " + maxprice); // 디버깅을 위한 출력 추가
+            resultSet = databaseConnect.getProducts(styleCode, furnitureType, minprice, maxprice);
             if (resultSet != null && !resultSet.isClosed()) {
+            	System.out.println("Updating product components...");
                 updateProductComponents(resultSet);
             } else {
                 System.out.println("ResultSet is null or closed.");

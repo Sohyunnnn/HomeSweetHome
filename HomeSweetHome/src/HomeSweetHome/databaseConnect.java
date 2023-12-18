@@ -20,11 +20,11 @@ public class databaseConnect {
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/homesweethome";
 
-    private static final String USER = personal.Pid;
-    private static final String PW = personal.Ppw;
-    
-    
-
+//    private static final String USER = personal.Pid;
+//    private static final String PW = personal.Ppw;
+//    
+//    
+//
     private static final String USER = "root";
     private static final String PW = "";
 
@@ -45,11 +45,11 @@ public class databaseConnect {
     private Connection getConnection() throws SQLException {
         // MySQL 서버의 JDBC URL, 사용자 이름 및 암호
         String url = "jdbc:mysql://localhost:3306/homesweethome";
-        String user = personal.Pid;
-        String password = personal.Ppw;
+//        String user = personal.Pid;
+//        String password = personal.Ppw;
 
         // 연결을 설정합니다.
-        Connection connection = DriverManager.getConnection(url, user, password);
+        Connection connection = DriverManager.getConnection(url, USER, PW);
 
         return connection;
     }
@@ -88,29 +88,63 @@ public class databaseConnect {
         }
     }
     
-    public static ResultSet getProducts(int styleCode) throws Exception {
-    	Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+    public static ResultSet getProducts(int styleCode, int furnitureType, int minPrice, int maxPrice) throws Exception {
+        Connection conn = null;
+         PreparedStatement preparedStatement = null;
+         ResultSet resultSet = null;
 
-        try {
-            conn = connect();
-            
-            String query;
-            if (styleCode > 0) {
-                query = "SELECT * FROM product WHERE product_stylecode = ?";
-                preparedStatement = conn.prepareStatement(query);
-                preparedStatement.setInt(1, styleCode);}
+         try {
+             conn = connect();
+             
+             
+             // SQL 쿼리
+             String query = "SELECT * FROM product WHERE 1";
+             
+             // styleCode가 0보다 크면 해당 스타일 코드에 대한 필터 추가
+             if (styleCode > 0) {
+                 query += " AND product_stylecode = ?";
+             }
+             
+             // furnitureType이 0보다 크면 해당 가구 유형에 대한 필터 추가
+             if (furnitureType > 0) {
+                 query += " AND product_F_type = ?";
+             }
+          // 가격 필터
+             if (minPrice > 0 || maxPrice > 0) {
+                 query += " AND product_price >= ? AND product_price <= ?";
+             }
 
-            resultSet = preparedStatement.executeQuery();
-            return resultSet;  // 여기서 닫을 필요 없음
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
-        } finally {
-            //close(null, preparedStatement, resultSet);
-        }
-    }
+             preparedStatement = conn.prepareStatement(query);
+
+             int parameterIndex = 1;
+
+             // 가격 필터와 관련된 preparedStatement 설정
+             if (minPrice > 0 || maxPrice > 0) {
+                 preparedStatement.setInt(parameterIndex++, minPrice);
+                 preparedStatement.setInt(parameterIndex++, maxPrice);
+             }
+
+             // styleCode가 0보다 크면 해당 스타일 코드 설정
+             if (styleCode > 0) {
+                 preparedStatement.setInt(parameterIndex++, styleCode);
+             }
+
+             // furnitureType이 0보다 크면 해당 가구 유형 설정
+             if (furnitureType > 0) {
+                 preparedStatement.setInt(parameterIndex++, furnitureType);
+             }
+
+             resultSet = preparedStatement.executeQuery();
+             return resultSet;  // 여기서 닫을 필요 없음
+             
+         } catch (SQLException e) {
+             e.printStackTrace();
+             throw e;
+         } finally {
+             //close(null, preparedStatement, resultSet);
+         }
+     }
+
 
     
     //로그인에 관한 코드
