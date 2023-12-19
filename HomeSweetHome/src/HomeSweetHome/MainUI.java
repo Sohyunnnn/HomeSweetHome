@@ -399,6 +399,11 @@ class ImagePanel extends JPanel {
     public ImagePanel(MainUI mainUI) {
         this.mainUI = mainUI;
         setLayout(null);
+        
+        JLabel attention = new JLabel("원하는 이미지를 클릭해 주세요!");
+        attention.setBounds(335, 6, 400, 29);
+        attention.setFont(new Font("굴림체", Font.PLAIN, 20));
+        add(attention);
 
         JLabel largerLogoLabel = new JLabel();
         setLabelProperties(largerLogoLabel, 6);
@@ -418,7 +423,9 @@ class ImagePanel extends JPanel {
         
 
         JButton[] imageButtons = new JButton[5];
-
+        setBackground(Color.WHITE);
+        
+        
         for (int i = 1; i <= 5; i++) {
             imageButtons[i - 1] = new JButton();
             setButtonProperties(imageButtons[i - 1], i);
@@ -453,10 +460,10 @@ class ImagePanel extends JPanel {
             case 3:
                 icon = new ImageIcon("images/midcentury.png");
                 break;
-            case 4:
+            case 5:
                 icon = new ImageIcon("images/natural.png");
                 break;
-            case 5:
+            case 4:
                 icon = new ImageIcon("images/contry.png");
                 break;
         }
