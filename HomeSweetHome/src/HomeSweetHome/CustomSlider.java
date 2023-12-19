@@ -95,10 +95,10 @@ public class CustomSlider extends JPanel {
         g.setColor(Color.GRAY);
         g.fillRect(thumbDiameter / 2, 25- barHeight / 2, barWidth, barHeight);
 
-        g.setColor(Color.RED);
+        g.setColor(Color.decode("#163A9C"));
         g.fillOval(lowerThumbX, 25 - thumbDiameter / 2, thumbDiameter, thumbDiameter);
 
-        g.setColor(Color.BLUE);
+        g.setColor(Color.decode("#163A9C"));
         g.fillOval(upperThumbX, 25 - thumbDiameter / 2, thumbDiameter, thumbDiameter);
     }
 

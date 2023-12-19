@@ -20,13 +20,13 @@ public class databaseConnect {
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/homesweethome";
 
-    private static final String USER = personal.Pid;
-    private static final String PW = personal.Ppw;
+//    private static final String USER = personal.Pid;
+//    private static final String PW = personal.Ppw;
     
-//    
-//
-//    private static final String USER = "root";
-//    private static final String PW = "";
+    
+
+    private static final String USER = "root";
+    private static final String PW = "";
 
 
     public static Connection connect() throws Exception {
@@ -37,6 +37,7 @@ public class databaseConnect {
             // ClassNotFoundException은 클래스를 찾을 수 없는 경우 발생
             // SQLException은 데이터베이스 연결 등에 문제가 있는 경우 발생
             // 이 예외들을 SQLException으로 묶어서 던집니다.
+    		e.printStackTrace();
             throw new SQLException("DB 연결 중 오류 발생", e);
         }
         
@@ -45,11 +46,11 @@ public class databaseConnect {
     private Connection getConnection() throws SQLException {
         // MySQL 서버의 JDBC URL, 사용자 이름 및 암호
         String url = "jdbc:mysql://localhost:3306/homesweethome";
-        String user = personal.Pid;
-        String password = personal.Ppw;
+//        String user = personal.Pid;
+//        String password = personal.Ppw;
 
         // 연결을 설정합니다.
-        Connection connection = DriverManager.getConnection(url, user, password);
+        Connection connection = DriverManager.getConnection(url, USER, PW);
 
         return connection;
     }
@@ -95,6 +96,10 @@ public class databaseConnect {
 
          try {
              conn = connect();
+             if (conn == null) {
+            	    System.out.println("Connection is null");
+            	    return null; // 또는 예외를 throw
+            	}
              
              
              // SQL 쿼리
@@ -110,19 +115,16 @@ public class databaseConnect {
                  query += " AND product_F_type = ?";
              }
           // 가격 필터
-             if (minPrice > 0 || maxPrice > 0) {
-                 query += " AND product_price >= ? AND product_price <= ?";
+             if ((minPrice > 0 || maxPrice > 0)) {
+            	    query += " AND product_price >= ? AND product_price <= ?";
              }
+             System.out.println("Executing query: " + query);
+             System.out.println("결과 스타일코드"+styleCode+" F_type"+furnitureType+minPrice+maxPrice);
 
              preparedStatement = conn.prepareStatement(query);
 
              int parameterIndex = 1;
 
-             // 가격 필터와 관련된 preparedStatement 설정
-             if (minPrice > 0 || maxPrice > 0) {
-                 preparedStatement.setInt(parameterIndex++, minPrice);
-                 preparedStatement.setInt(parameterIndex++, maxPrice);
-             }
 
              // styleCode가 0보다 크면 해당 스타일 코드 설정
              if (styleCode > 0) {
@@ -134,6 +136,11 @@ public class databaseConnect {
                  preparedStatement.setInt(parameterIndex++, furnitureType);
              }
 
+             // 가격 필터와 관련된 preparedStatement 설정
+             if (minPrice > 0 || maxPrice > 0) {
+                 preparedStatement.setInt(parameterIndex++, minPrice);
+                 preparedStatement.setInt(parameterIndex++, maxPrice);
+             }
              resultSet = preparedStatement.executeQuery();
              return resultSet;  // 여기서 닫을 필요 없음
              

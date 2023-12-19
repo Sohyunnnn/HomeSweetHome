@@ -43,8 +43,8 @@ public class MainPage extends JPanel {
     private String userID;
     private String loggedInUserID;
 
-    private int currentStyleCode=0;
-    private int currentfurnitureType=0;
+    private int currentStyleCode;
+    private int currentfurnitureType;
     private int maxprice;
     private int minprice;
     
@@ -214,7 +214,8 @@ public class MainPage extends JPanel {
                 maxPriceLabel.setText(String.valueOf(maxPrice));
                 minPriceLabel.setText(String.valueOf(minPrice));
                 //System.out.println("Slider values changed. Min Price: " + minPrice + ", Max Price: " + maxPrice); // 디버깅을 위한 출력 추가
-                filterProductsByStyle(currentStyleCode, currentfurnitureType);
+                //setStyleCode(currentStyleCode);
+                filterProductsByStyle(currentStyleCode, currentfurnitureType, minPrice, maxPrice);
             }
         });
         
@@ -227,9 +228,10 @@ public class MainPage extends JPanel {
     private void setPrice(int minPrice, int maxPrice) {
     	this.maxprice = maxPrice;
     	this.minprice = minPrice;
-    	System.out.println("Slider values changed. Min Price: " + minprice + ", Max Price: " + maxprice); // 디버깅을 위한 출력 추가
+    	System.out.println("Min Price: " + minprice + ", Max Price: " + maxprice); // 디버깅을 위한 출력 추가
         
     }
+
 
     public JScrollPane getScrollPane() {	
     	return scrollPane;	
@@ -413,8 +415,10 @@ public class MainPage extends JPanel {
 //            else {
 //            	filterProductsByStyle(styleCode, furnitureType);
 //            }
+        	//setStyleCode(styleCode);
             currentStyleCode = styleCode;
-            filterProductsByStyle(currentStyleCode, furnitureType);
+            setPrice(0,0);
+            filterProductsByStyle(currentStyleCode, furnitureType, minprice, maxprice);
          }
      }
      private void setStyleCode(int styleCode) {
@@ -431,24 +435,41 @@ public class MainPage extends JPanel {
          @Override
          public void mouseClicked(MouseEvent e) {
         	 currentfurnitureType = furnitureType;
-             filterProductsByStyle(currentStyleCode, furnitureType);
+        	 setPrice(0,0);
+             filterProductsByStyle(currentStyleCode, furnitureType, minprice, maxprice);
          }
      }
 
     
-    public void filterProductsByStyle(int styleCode, int furnitureType) {
+    public void filterProductsByStyle(int styleCode, int furnitureType, int minPrice, int maxPrice) {
     	ResultSet resultSet = null;
         try {
         	System.out.println("Filtering products...");
         	 System.out.println("스타일코드"+styleCode+" F_type"+furnitureType);
-        	 System.out.println("Min Price: " + minprice + ", Max Price: " + maxprice); // 디버깅을 위한 출력 추가
-            resultSet = databaseConnect.getProducts(styleCode, furnitureType, minprice, maxprice);
-            if (resultSet != null && !resultSet.isClosed()) {
-            	System.out.println("Updating product components...");
-                updateProductComponents(resultSet);
-            } else {
-                System.out.println("ResultSet is null or closed.");
-            }
+        	 System.out.println("Min Price: " + minPrice + ", Max Price: " + maxPrice); // 디버깅을 위한 출력 추가
+        	 if (resultSet != null && !resultSet.isClosed()) {
+                 resultSet.close();
+             }
+             
+             resultSet = databaseConnect.getProducts(styleCode, furnitureType, minPrice, maxPrice);
+//             if (resultSet != null && !resultSet.isClosed()) {
+//                 System.out.println("Query result:");
+//                 while (resultSet.next()) {
+//                     System.out.println(resultSet.getString("product_name") + ", " + resultSet.getInt("product_price"));
+//                 }
+//             } else {
+//                 System.out.println("ResultSet is null or closed2.");
+//             }
+             
+             if (resultSet != null && !resultSet.isClosed()) {
+             	System.out.println("Updating product components...");
+                 updateProductComponents(resultSet);
+             } else {
+                 System.out.println("ResultSet is null or closed.");
+             }
+            
+            
+            
                        
         } catch (SQLException e) {
             System.err.println("SQL Exception: " + e.getMessage());
@@ -461,6 +482,11 @@ public class MainPage extends JPanel {
         }
         
     }
+
+        	
+        	 
+                       
+        
     private void updateProductComponents(ResultSet resultSet) {
     	 try {
     	        // resultSet이 닫혀 있는지 확인
@@ -509,7 +535,7 @@ public class MainPage extends JPanel {
     	            
     	            i++;
     	        }
-    	        resultSet.close();
+    	        //resultSet.close();
 
     	        // UI 다시 그리기
     	        revalidate();
