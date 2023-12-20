@@ -8,6 +8,12 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 
 public class MainPage extends JPanel {
     private JLabel vintageB = new JLabel("빈티지");
@@ -89,8 +95,7 @@ public class MainPage extends JPanel {
         JLabel smallLogoLabel = new JLabel(smallLogo);
         smallLogoLabel.setBounds(16, 16, 262, 39);
 
-        
-        strCombo.setBounds(843, 141, 70, 22);
+       
 
         // PriceSl 위치 설정
         PriceSl.setBounds(510, 113, 250, 70);
@@ -191,30 +196,21 @@ public class MainPage extends JPanel {
                 // WishListPanel에 해당 값을 전달
                 mainUI.getWishListPanel().setLoggedInUserID(loggedInUserID);
                 
-             // initWishListPanel을 호출하여 초기화
-                //mainUI.getWishListPanel().initWishListPanel();
             	
-                mainUI.showWishListPanel();//
+                mainUI.showWishListPanel();
             }
         });
 
-        strCombo.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // 콤보박스 눌렀을 때 리스너 구현
-            }
-        });
 
         PriceSl.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int minPrice = PriceSl.getLowerValue();
                 int maxPrice = PriceSl.getUpperValue();
-                //최소, 최대값을 DB에서 상품 가져오는 메소드에 넣기..
+                //최소, 최대값을 DB에서 상품 가져오는 메소드에 넣기.
                 setPrice(minPrice, maxPrice);
                 maxPriceLabel.setText(String.valueOf(maxPrice));
                 minPriceLabel.setText(String.valueOf(minPrice));
-                //System.out.println("Slider values changed. Min Price: " + minPrice + ", Max Price: " + maxPrice); // 디버깅을 위한 출력 추가
-                //setStyleCode(currentStyleCode);
                 filterProductsByStyle(currentStyleCode, currentfurnitureType, minPrice, maxPrice);
             }
         });
@@ -246,7 +242,6 @@ public class MainPage extends JPanel {
 
         // ProductLabel 내부의 컴포넌트 크기 및 배치 설정
         productPanel.setLayout(null);
-        //productPanel.setBounds(200, 220, 45, 239);
         productPanel.setBackground(new Color(139, 158, 211));
 
         // 이미지 크기 및 위치
@@ -270,6 +265,30 @@ public class MainPage extends JPanel {
         productPanel.add(imageLabel);
         productPanel.add(nameLabel);
         productPanel.add(priceLabel);
+        
+        
+        imageLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    // 클릭한 이미지의 product_ID를 가져와서 활용
+                    int clickedProductID = productPanel.getProductID();
+
+                    // productID를 clickedProductID로 수정
+                    String imageURL = databaseConnect.getImageUrl(String.valueOf(clickedProductID));
+
+                    // 이미지 URL을 웹페이지 창으로 열기
+                    openWebpage(imageURL);
+
+                    System.out.println("상품 ID가 " + clickedProductID + "인 제품 이미지를 클릭했습니다.");
+                    System.out.println("이미지 URL: " + imageURL);
+                } catch (Exception ex) {
+                    // 예외 처리
+                    System.err.println("예외: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
+        });
         
 
         return productPanel;
@@ -408,14 +427,6 @@ public class MainPage extends JPanel {
 
          @Override
          public void mouseClicked(MouseEvent e) {
-            //setStyleCode(styleCode);
-//            if(furnitureType > 0) {
-//            	filterProductsByStyle(styleCode, furnitureType);
-//       	 }
-//            else {
-//            	filterProductsByStyle(styleCode, furnitureType);
-//            }
-        	//setStyleCode(styleCode);
             currentStyleCode = styleCode;
             setPrice(0,0);
             filterProductsByStyle(currentStyleCode, furnitureType, minprice, maxprice);
@@ -451,15 +462,7 @@ public class MainPage extends JPanel {
                  resultSet.close();
              }
              
-             resultSet = databaseConnect.getProducts(styleCode, furnitureType, minPrice, maxPrice);
-//             if (resultSet != null && !resultSet.isClosed()) {
-//                 System.out.println("Query result:");
-//                 while (resultSet.next()) {
-//                     System.out.println(resultSet.getString("product_name") + ", " + resultSet.getInt("product_price"));
-//                 }
-//             } else {
-//                 System.out.println("ResultSet is null or closed2.");
-//             }
+             resultSet = databaseConnect.getProducts(styleCode, furnitureType, minPrice, maxPrice);       
              
              if (resultSet != null && !resultSet.isClosed()) {
              	System.out.println("Updating product components...");
@@ -502,7 +505,6 @@ public class MainPage extends JPanel {
     	        
     	        productPanelContainer.removeAll();
     	        productComponents.clear();
-    	        //addProductComponents();
     	        int productsPerRow = 4;
     	        int xInitial = 45;
     	        int yInitial = 20;
@@ -594,7 +596,14 @@ public class MainPage extends JPanel {
         }
     }
     
-    
-    
-    
+    private static void openWebpage(String url) {
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
 }
+    
+    
+    
