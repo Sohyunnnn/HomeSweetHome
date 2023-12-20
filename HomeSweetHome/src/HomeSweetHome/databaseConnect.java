@@ -433,29 +433,7 @@ public class databaseConnect {
         return wishlistItems;
     }
     
-    
-// // product_ID를 기반으로 제품 이미지 URL을 가져오기
-//    public static String getProductImageURL(int clickedProductID) throws Exception {
-//        ResultSet resultSet = null;
-//        try {
-//            // 데이터베이스에서 clickedProductID를 기반으로 제품 이미지 URL을 조회합니다.
-//            resultSet = getProductInfo(clickedProductID);
-//            if (resultSet.next()) {
-//                // ResultSet으로부터 이미지 URL을 추출하여 반환
-//                String imageURL = resultSet.getString("product_img");
-//
-//                // ResultSet을 사용한 후에는 닫아주는 것이 좋습니다.
-//                close(null, null, resultSet);
-//
-//                return imageURL;
-//            }
-//        } finally {
-//            // ResultSet이 비어있는 경우에도 닫아주어야 합니다.
-//            close(null, null, resultSet);
-//        }
-//        return null; // 이미지 URL을 찾지 못한 경우 null을 반환합니다.
-//    }
-//    
+      
     
     public String getImageUrl(String imageId) throws SQLException {
         String sql = "SELECT url FROM product WHERE product_id = ?";
