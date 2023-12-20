@@ -197,7 +197,7 @@ public class MainPage extends JPanel {
                 mainUI.getWishListPanel().setLoggedInUserID(loggedInUserID);
                 
             	
-                mainUI.showWishListPanel();//
+                mainUI.showWishListPanel();
             }
         });
 
