@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.awt.event.MouseAdapter; 
 import java.util.List;
 
@@ -725,8 +728,39 @@ class WishListPanel extends JPanel {
         productPanel.add(nameLabel);
         productPanel.add(priceLabel);
         
+        imageLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    // 클릭한 이미지의 product_ID를 가져와서 활용
+                    int clickedProductID = productPanel.getProductID();
+
+                    // productID를 clickedProductID로 수정
+                    String imageURL = databaseConnect.getImageUrl(String.valueOf(clickedProductID));
+
+                    // 이미지 URL을 웹페이지 창으로 열기
+                    openWebpage(imageURL);
+
+                    System.out.println("상품 ID가 " + clickedProductID + "인 제품 이미지를 클릭했습니다.");
+                    System.out.println("이미지 URL: " + imageURL);
+                } catch (Exception ex) {
+                    // 예외 처리
+                    System.err.println("예외: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
+        });
+        
 
         return productPanel;
+    }
+    
+    private static void openWebpage(String url) {
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
     
     
