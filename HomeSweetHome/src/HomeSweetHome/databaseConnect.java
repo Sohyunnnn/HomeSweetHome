@@ -20,13 +20,13 @@ public class databaseConnect {
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/homesweethome";
 
-//    private static final String USER = personal.Pid;
-//    private static final String PW = personal.Ppw;
+    private static final String USER = personal.Pid;
+    private static final String PW = personal.Ppw;
     
     
 
-    private static final String USER = "root";
-    private static final String PW = "";
+//    private static final String USER = "root";
+//    private static final String PW = "";
 
 
     public static Connection connect() throws Exception {
@@ -46,8 +46,8 @@ public class databaseConnect {
     private Connection getConnection() throws SQLException {
         // MySQL 서버의 JDBC URL, 사용자 이름 및 암호
         String url = "jdbc:mysql://localhost:3306/homesweethome";
-//        String user = personal.Pid;
-//        String password = personal.Ppw;
+        String user = personal.Pid;
+        String password = personal.Ppw;
 
         // 연결을 설정합니다.
         Connection connection = DriverManager.getConnection(url, USER, PW);
@@ -298,7 +298,7 @@ public class databaseConnect {
             e.printStackTrace();
             throw e;
         } finally {
-            //close(null, preparedStatement, resultSet);
+            
         }
     }
     
@@ -327,7 +327,8 @@ public class databaseConnect {
     }
 
 
-    public ResultSet getProductInfo(int productID) throws Exception {
+ // 위시리스트에서 제품 정보 가져오기
+    public static ResultSet getProductInfo(int productID) throws Exception {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -350,7 +351,6 @@ public class databaseConnect {
 
         return resultSet;
     }
-
 
 
 
@@ -433,6 +433,50 @@ public class databaseConnect {
         return wishlistItems;
     }
     
+    
+// // product_ID를 기반으로 제품 이미지 URL을 가져오기
+//    public static String getProductImageURL(int clickedProductID) throws Exception {
+//        ResultSet resultSet = null;
+//        try {
+//            // 데이터베이스에서 clickedProductID를 기반으로 제품 이미지 URL을 조회합니다.
+//            resultSet = getProductInfo(clickedProductID);
+//            if (resultSet.next()) {
+//                // ResultSet으로부터 이미지 URL을 추출하여 반환
+//                String imageURL = resultSet.getString("product_img");
+//
+//                // ResultSet을 사용한 후에는 닫아주는 것이 좋습니다.
+//                close(null, null, resultSet);
+//
+//                return imageURL;
+//            }
+//        } finally {
+//            // ResultSet이 비어있는 경우에도 닫아주어야 합니다.
+//            close(null, null, resultSet);
+//        }
+//        return null; // 이미지 URL을 찾지 못한 경우 null을 반환합니다.
+//    }
+//    
+    
+    public String getImageUrl(String imageId) throws SQLException {
+        String sql = "SELECT url FROM product WHERE product_id = ?";
+        try (Connection connection = connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, imageId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("url");
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SQLException("getImageUrl failed", e);
+        }
+    }
+
+
+   
     
 }
     
